@@ -35,3 +35,10 @@ tidy_Endowments %>%
   labs(title = "Macalester's Endowment Over Time", x="Year", y="Endowment (in millions)")
   
 ```
+
+```{r}
+tidy_Endowments %>% 
+  ggplot(aes(x = year, y = endowment)) + 
+    geom_boxplot() +
+  labs(title = "Liberal Arts College Endowments Over Time", x="Year", y="Endowment (in millions)")
+```
