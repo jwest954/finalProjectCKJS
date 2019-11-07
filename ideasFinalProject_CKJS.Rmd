@@ -30,6 +30,39 @@ With this data we propose some ideas on how to reach meaningful outcomes in our 
 * Highlight Regional difference in endowment patterns with cloropleth maps, comparing Colleges in the Midwest, West and East Coast. It is worth noticing that we will control for variables such as student body size, tuition cost, etc, to guarantee significant results. 
 
 
+```{r}
+library(tidyverse)
+library(readr)
+```
+
+```{r}
+Endowments <- read_csv("Endowments.csv")
+```
+
+```{r}
+tidy_Endowments <- Endowments %>% 
+  pivot_longer(cols = starts_with("20"),
+               names_to = "year", 
+               values_to = "endowment") 
+```
+
+```{r}
+tidy_Endowments %>% 
+  filter(College == "Macalester (MN)") %>% 
+  ggplot(aes(year, endowment)) + 
+    geom_point() +
+  labs(title = "Macalester's Endowment Over Time", x="Year", y="Endowment (in millions)")
+  
+```
+
+```{r}
+tidy_Endowments %>% 
+  ggplot(aes(x = year, y = endowment)) + 
+    geom_boxplot() +
+  labs(title = "Liberal Arts College Endowments Over Time", x="Year", y="Endowment (in millions)")
+```
+
+
 
 
 
