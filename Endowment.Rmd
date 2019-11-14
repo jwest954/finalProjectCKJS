@@ -14,10 +14,17 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(tidyverse)
 library(readr)
+library(readxl)
 ```
 
 ```{r}
 Endowments <- read_csv("Endowments.csv")
+```
+
+```{r}
+USNews_Rankings <- read_excel("PCDB_USNews_Rankings.xlsx", 
+    sheet = "US News Ranks", range = "A2:K43") %>% 
+  rename(College = ...1)
 ```
 
 ```{r}
