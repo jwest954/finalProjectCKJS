@@ -12,6 +12,7 @@ tidy_Endowments <- Endowments %>%
                values_to = "endowment", names_ptypes = list(year=integer())) 
 
 ui <- fluidPage(
+  titlePanel("College Endowments"),
   sliderInput(inputId = "year_range", label = "Year Range", 
               min = 2008, max=2017, value=c(2008,2017), sep = ""),
   selectInput("College1", "College 1:", 
@@ -20,8 +21,11 @@ ui <- fluidPage(
               choices=unique(tidy_Endowments$College)),
   helpText("This plot will show the changes in the selected colleges' endowment for the selected range."),
   #submitButton(text = "Create my plot"),
-  plotOutput(outputId = "plot"),
-  plotlyOutput(outputId = "plot2"))
+  tabsetPanel(type = "tabs",
+              tabPanel("Plot", plotOutput(outputId = "plot")),
+              tabPanel("Plot2", plotlyOutput(outputId = "plot2"))
+              ))
+  
 
 server <- function(input, output) {
   output$plot<- renderPlot({
