@@ -1,0 +1,12 @@
+name: hw8-app
+title: hw8-app
+username:
+account: jayden-west
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1473007
+bundleId: 2589682
+url: https://jayden-west.shinyapps.io/hw8-app/
+when: 1573750779.24058
+asMultiple: FALSE
+asStatic: FALSE
