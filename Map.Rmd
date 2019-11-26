@@ -1,0 +1,84 @@
+---
+title: "Map"
+author: "Cande Torres"
+date: "11/25/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r libraries}
+library(tidyverse)
+library(devtools) 
+library(openintro)
+library(maps)
+library(ggthemes) 
+library(ggmap)
+library(gplots) #new
+library(RColorBrewer) #new
+library(sf) #new
+library(leaflet) #new
+library(carData) 
+```
+
+```{r}
+library(readxl)
+map_data <- read_excel("~/Desktop/Fall 2019/Intro to DataSC/FINALPROJECT/map-data.xlsx")
+View(map_data)
+```
+
+Trying which map looks better here
+```{r}
+us2 <- get_stamenmap(
+    bbox = c(left = -156.88, bottom = 13.50, right = -61.08, top = 62.27), 
+    maptype = "toner",
+    zoom = 4
+)
+```
+
+```{r}
+us <- get_stamenmap(
+    bbox = c(left = -111.885, bottom = 25.205, right = -63.984, top = 50.903), 
+    maptype = "toner",
+    zoom = 4
+)
+```
+
+```{r}
+ggmap(us2)+
+  geom_point(data = map_data,
+             aes(x=lon, y=lat),
+             color= "red", alpha=.7, size=.5)+
+  labs(title = "Geographical location of Colleges in the US")
+
+```
+```{r}
+states_map <- map_data("state")
+
+geom_map(aes(map_id = state_name), map = states_map)+
+geom_point(data = map_data,
+             aes(x=lon, y=lat),
+             color= "red", alpha=.7, size=.5)+
+  labs(title = "Geographical location of Colleges in the US")
+
+```
+
+             
+starbucks_with_2018_pop_est %>% 
+  ggplot(aes(fill = starbucks_per_10000)) +
+  geom_map(aes(map_id = state_name), map = states_map) +
+  expand_limits(x = states_map$long, y = states_map$lat) + 
+  theme_map()+
+  scale_fill_distiller(palette = "green")+
+  labs(title = "Choropleth Map: Starbuck per 10000 habitants in the US")
+  
+  
+```{r}
+leaflet(data = map_data) %>% 
+  addTiles() %>% 
+  addMarkers(lng = ~lon, lat = ~lat, label = ~College) 
+```
+  
+  
