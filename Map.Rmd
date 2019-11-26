@@ -25,9 +25,26 @@ library(carData)
 
 ```{r}
 library(readxl)
-map_data <- read_excel("~/Desktop/Fall 2019/Intro to DataSC/FINALPROJECT/map-data.xlsx")
+map_data <- read_excel("/Users/cande/Desktop/Fall 2019/Intro to DataSC/FINALPROJECT/finalProjectCKJS/map_data/map-data.xlsx")
 View(map_data)
 ```
+
+```{r}
+map_data_longer <- map_data %>% 
+  pivot_longer(cols = starts_with("R20"),
+               names_to = "year", 
+               values_to = "ranking") 
+view(map_data_longer)
+```
+
+```{r}
+map_data_lon <-map_data_longer %>% 
+  pivot_longer(cols=starts_with("20"),
+               names_to = "YEAR",
+               values_to = "endowment")
+view(map_data_lon)
+```
+
 
 Trying which map looks better here
 ```{r}

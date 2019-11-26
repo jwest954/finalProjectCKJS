@@ -4,7 +4,7 @@ library(readr)
 library(rsconnect)
 
 Endowments <- read_csv("Endowments.csv")
-View(Endowments)
+
 
 Endowments <- read_csv("Endowments.csv")
 
