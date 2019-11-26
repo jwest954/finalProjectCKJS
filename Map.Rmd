@@ -31,18 +31,24 @@ View(map_data)
 
 ```{r}
 map_data_longer <- map_data %>% 
+  select(-1*starts_with("20")) %>% 
   pivot_longer(cols = starts_with("R20"),
                names_to = "year", 
-               values_to = "ranking") 
-view(map_data_longer)
+               values_to = "ranking") %>% 
+  mutate(year= str_sub(year, start=2, end=5))
 ```
 
 ```{r}
-map_data_lon <-map_data_longer %>% 
+map_data_lon <-map_data %>% 
+  select(-1*starts_with("R20")) %>% 
   pivot_longer(cols=starts_with("20"),
-               names_to = "YEAR",
+               names_to = "year",
                values_to = "endowment")
-view(map_data_lon)
+```
+
+```{r}
+full_map_data<- map_data_longer %>% 
+  full_join(map_data_lon, by=c("College", "year", "Region","lon", "lat", "State"))
 ```
 
 
@@ -83,19 +89,14 @@ geom_point(data = map_data,
 ```
 
              
-starbucks_with_2018_pop_est %>% 
-  ggplot(aes(fill = starbucks_per_10000)) +
-  geom_map(aes(map_id = state_name), map = states_map) +
-  expand_limits(x = states_map$long, y = states_map$lat) + 
-  theme_map()+
-  scale_fill_distiller(palette = "green")+
-  labs(title = "Choropleth Map: Starbuck per 10000 habitants in the US")
-  
+# Ignore everything before but the following map  
   
 ```{r}
 leaflet(data = map_data) %>% 
   addTiles() %>% 
   addMarkers(lng = ~lon, lat = ~lat, label = ~College) 
+
+#could addCircleMarkers, popupOption = TRUE add the College name in the legend, fillColor=~pal(ranking) I think I have to create a pallette like in the HW, provided user chose the year in the app before hand (not a slider but a pull down). 
 ```
   
   
