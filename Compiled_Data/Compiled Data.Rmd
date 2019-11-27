@@ -1,0 +1,159 @@
+---
+title: "Compiled Data"
+author: "Kellie Stellmach"
+date: "11/26/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(readr)
+library(readxl)
+```
+
+```{r}
+Region_Lon_Lat_State <- read_excel("Region_Lon_Lat_State.xlsx")
+```
+
+```{r}
+Fulltime_Enrollment <- read_excel("PCDB_fulltime and parttime enrollment.xlsx", 
+    sheet = "Fulltime Enrollments", range = "A6:K47", 
+    col_types = c("text", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric")) %>% 
+  rename(College = ...1) %>% 
+  pivot_longer(cols = starts_with("20"),
+               names_to = "year", 
+               values_to = "fulltime")
+```
+
+```{r}
+Parttime_Enrollment <- read_excel("PCDB_fulltime and parttime enrollment.xlsx", 
+    sheet = "Parttime Enrollments", range = "A6:K47", 
+    col_types = c("text", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric")) %>% 
+  rename(College = ...1) %>% 
+  pivot_longer(cols = starts_with("20"),
+               names_to = "year", 
+               values_to = "parttime")
+
+```
+
+
+```{r}
+International_Enrollment <- read_excel("PCDB_International_Enrollment.xlsx", 
+    sheet = "Intl as % of Total Enrollment", 
+    range = "A6:K47", col_types = c("text", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric")) %>% 
+rename(College = ...1) %>% 
+pivot_longer(cols = starts_with("20"),
+               names_to = "year", 
+               values_to = "international")
+```
+
+
+```{r}
+SOC_Enrollment <- read_excel("PCDB_SOC_Enrollment.xlsx", 
+    sheet = "SOC as % of Total Enrollment", 
+    range = "A6:K47", col_types = c("text", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric")) %>% 
+  rename(College = ...1) %>% 
+  pivot_longer(cols = starts_with("20"),
+               names_to = "year", 
+               values_to = "SOC")
+```
+
+```{r}
+Female_Enrollment <- read_excel("PCDB_Female_Enrollment.xlsx", 
+    sheet = "% Full-time Female", range = "A6:K47", 
+    col_types = c("text", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric")) %>% 
+  rename(College = ...1) %>% 
+  pivot_longer(cols = starts_with("20"),
+               names_to = "year", 
+               values_to = "female")
+```
+
+```{r}
+Retention_Rates <- read_excel("PCDB_Retention_Rates.xlsx", 
+    sheet = "Retention Rates", range = "A7:K48") %>% 
+  rename(College = ...1) %>% 
+  pivot_longer(cols = starts_with("20"),
+               names_to = "year", 
+               values_to = "retention")
+```
+
+```{r}
+Graduation_Rates <- read_excel("PCDB_Graduation_Rates.xlsx", 
+    range = "A7:K48") %>% 
+  rename(College = ...1) %>% 
+  pivot_longer(cols = starts_with("20"),
+               names_to = "year", 
+               values_to = "graduation")
+```
+
+```{r}
+Tuition <- read_excel("PCDB_Tuition.xlsx", 
+    sheet = "Comprehensive", range = "A6:K47")%>% 
+  rename(College = ...1) %>% 
+  pivot_longer(cols = starts_with("20"),
+               names_to = "year", 
+               values_to = "tuition")
+```
+
+```{r}
+USNews_Rankings <- read_excel("PCDB_USNews_Rankings.xlsx", 
+    sheet = "US News Ranks", range = "A2:K43") %>% 
+  rename(College = ...1) %>% 
+  pivot_longer(cols = starts_with("20"),
+               names_to = "year", 
+               values_to = "rank")
+```
+
+```{r}
+Endowment <- read_excel("PCDB_Endowments.xlsx", 
+    sheet = "Endowments", range = "A6:K47") %>% 
+  rename(College = ...1) %>% 
+  pivot_longer(cols = starts_with("20"),
+               names_to = "year", 
+               values_to = "endowment")
+```
+
+```{r}
+Compiled_Data <- Region_Lon_Lat_State %>% 
+  full_join(Fulltime_Enrollment, by = c("College")) %>%
+  full_join(Parttime_Enrollment, by = c("College", "year")) %>% 
+  full_join(International_Enrollment, by = c("College", "year")) %>% 
+  full_join(SOC_Enrollment, by = c("College", "year")) %>% 
+  full_join(Female_Enrollment, by = c("College", "year")) %>% 
+  full_join(Retention_Rates, by = c("College", "year")) %>%
+  full_join(Graduation_Rates, by = c("College", "year")) %>% 
+  full_join(Tuition, by = c("College", "year")) %>% 
+  full_join(USNews_Rankings, by = c("College", "year")) %>% 
+  full_join(Endowment, by = c("College", "year"))
+
+```
+
+
+
+
+
+
+
+
+
