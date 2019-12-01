@@ -99,4 +99,45 @@ leaflet(data = map_data) %>%
 #could addCircleMarkers, popupOption = TRUE add the College name in the legend, fillColor=~pal(ranking) I think I have to create a pallette like in the HW, provided user chose the year in the app before hand (not a slider but a pull down). 
 ```
   
+#Cathegorizing data
+
+```{r}
+table(full_map_data$ranking)
+```
+```{r}
+full_map_data$ranking_type<-ifelse(full_map_data$ranking <=30, "low", 
+                                   ifelse(full_map_data$ranking <=60 | full_map_data$ranking > 30, "intermediate",
+                                   ifelse(full_map_data$ranking > 60, "high", "other")))
+```
+
+#trying to put it in the map
+
+```{r}
+pal <- colorFactor("viridis", 
+                     domain = c("low", "intermediate", "high"))
+pal2 <- colorFactor(
+    palette = c('blue', 'yellow', 'red'),
+    domain = full_map_data$ranking_type)
   
+#missing year filter
+leaflet(data = full_map_data) %>% 
+  addTiles() %>% 
+  addCircles(lng = ~lon, 
+             lat = ~lat, 
+             label = ~College, 
+             weight = 10, 
+             opacity = 1, 
+             color = ~pal2(ranking_type),
+             popup=~paste(College,":", ranking, #here missing year filter
+                          sep="",
+                          radius=2)) %>% 
+  addLegend(pal= pal2, 
+            values = ~ranking_type, 
+            opacity = 0.5, 
+            position = "bottomright")  
+```
+
+
+
+
+ 

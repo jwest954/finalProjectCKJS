@@ -5,6 +5,9 @@ library(tidyverse)
 library(plotly)
 library(readr)
 library(readxl)
+library(leaflet)
+library(maps)
+library(maptools)
 
 Endowments <- read_csv("Endowments.csv")
 
@@ -25,6 +28,28 @@ tidy_USNews_Rankings <- USNews_Rankings %>%
   pivot_longer(cols = starts_with("20"),
                names_to = "year", 
                values_to = "ranking", names_ptypes = list(year=integer()))
+#Uploading data for the map 
+library(readxl)
+map_data <- read_excel("/Users/cande/Desktop/Fall 2019/Intro to DataSC/FINALPROJECT/finalProjectCKJS/map_data/map-data.xlsx")
+View(map_data)
+#tidying map data
+map_data_longer <- map_data %>% 
+  select(-1*starts_with("20")) %>% 
+  pivot_longer(cols = starts_with("R20"),
+               names_to = "year", 
+               values_to = "ranking") %>% 
+  mutate(year= str_sub(year, start=2, end=5))
+
+map_data_lon <-map_data %>% 
+  select(-1*starts_with("R20")) %>% 
+  pivot_longer(cols=starts_with("20"),
+               names_to = "year",
+               values_to = "endowment")
+#Full map data (like the actual one)
+full_map_data<- map_data_longer %>% 
+  full_join(map_data_lon, by=c("College", "year", "Region","lon", "lat", "State"))
+
+
 
 ui <- fluidPage(
   titlePanel("College Comparison"),
@@ -38,7 +63,8 @@ ui <- fluidPage(
   #submitButton(text = "Create my plot"),
   tabsetPanel(type = "tabs",
               tabPanel("Endowments", plotlyOutput(outputId = "plot1")),
-              tabPanel("Ranking", plotlyOutput(outputId = "plot2"))))
+              tabPanel("Ranking", plotlyOutput(outputId = "plot2")),
+              tabPanel("Map", leafletOutput(outputId = "mymap"))))
   
 
 server <- function(input, output) {
@@ -55,7 +81,14 @@ server <- function(input, output) {
                                                  geom_line()+
                                                  scale_x_continuous(limits = input$year_range)+
                                                  coord_cartesian(ylim = c(0, 50), xlim = c(2010,2017))))})
-  
+
+ output$mymap <-renderLeaflet({
+   leaflet(data) %>% 
+     setView(lng = -99, lat = 45, zoom = 2)  %>% #setting the view over ~ center of North America
+     addTiles() %>% 
+     addMarkers(data = full_map_data, lat = ~ lat, lng = ~ lon, label = ~College)
+ })
+     
 }
 
 
