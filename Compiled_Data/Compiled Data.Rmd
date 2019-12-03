@@ -150,6 +150,9 @@ Compiled_Data <- Region_Lon_Lat_State %>%
 ```
 
 
+```{r}
+write.csv(Compiled_Data, file="Compiled_Data.csv")
+```
 
 
 
