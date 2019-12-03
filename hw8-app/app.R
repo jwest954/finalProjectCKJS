@@ -30,7 +30,7 @@ tidy_USNews_Rankings <- USNews_Rankings %>%
                values_to = "ranking", names_ptypes = list(year=integer()))
 #Uploading data for the map 
 library(readxl)
-map_data <- read_excel("/Users/cande/Desktop/Fall 2019/Intro to DataSC/FINALPROJECT/finalProjectCKJS/map_data/map-data.xlsx")
+map_data <- read_excel("../map_data/map-data.xlsx")
 View(map_data)
 #tidying map data
 map_data_longer <- map_data %>% 
