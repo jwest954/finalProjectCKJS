@@ -68,8 +68,13 @@ ui <- fluidPage(
                                    tabPanel("Ranking", plotlyOutput(outputId = "plot2"))
                        )),
               tabPanel("Map", leafletOutput(outputId="mymap")),
-              tabPanel("Search", helpText("Input your parameters to find colleges that match your search!"),
-                       textInput("tuition", "What should tuition be?" )))
+              tabPanel("Search", helpText("Input your parameters to find colleges that match your search!
+                                          NOTE: Data is for 2017"),
+                       textInput("tuition", "What should max tuition be?" ),
+                       selectInput("Region", "What region should the school be in?",
+                                   choices=unique(Compiled_Data$Region)),
+                       textInput("rank", "How should the school be ranked?"),
+                       tableOutput(outputId = "searchlist")))
               
   
   
@@ -97,6 +102,13 @@ server <- function(input, output) {
      addTiles() %>% 
      addMarkers(data = full_map_data, lat = ~ lat, lng = ~ lon, label = ~College)
  })
+ 
+ output$searchlist <- renderTable(Compiled_Data %>% filter(year==2017) %>% 
+                                    select(-X1, -lat, -lon, -year) %>% 
+                                    filter(tuition<input$tuition) %>% 
+                                    filter(Region==input$Region) %>% 
+                                    filter(rank<=input$rank)
+                                  )
      
 }
 
