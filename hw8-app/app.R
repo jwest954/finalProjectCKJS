@@ -11,6 +11,8 @@ library(maptools)
 
 Endowments <- read_csv("Endowments.csv")
 
+Compiled_Data <- read_csv("Compiled_Data.csv")
+
 #tidy the data by pivoting it
 tidy_Endowments <- Endowments %>% 
   pivot_longer(cols = starts_with("20"),
@@ -31,7 +33,7 @@ tidy_USNews_Rankings <- USNews_Rankings %>%
 #Uploading data for the map 
 library(readxl)
 map_data <- read_excel("../map_data/map-data.xlsx")
-View(map_data)
+
 #tidying map data
 map_data_longer <- map_data %>% 
   select(-1*starts_with("20")) %>% 
@@ -52,19 +54,26 @@ full_map_data<- map_data_longer %>%
 
 
 ui <- fluidPage(
-  titlePanel("College Comparison"),
-  sliderInput(inputId = "year_range", label = "Year Range", 
-              min = 2008, max=2017, value=c(2008,2017), sep = ""),
-  selectInput("College1", "College 1:", 
-              choices=unique(tidy_Endowments$College)),
-  selectInput("College2", "College 2:", 
-              choices=unique(tidy_Endowments$College)),
-  helpText("These plots show the changes in the selected colleges' rankings for the selected range."),
-  #submitButton(text = "Create my plot"),
-  tabsetPanel(type = "tabs",
-              tabPanel("Endowments", plotlyOutput(outputId = "plot1")),
-              tabPanel("Ranking", plotlyOutput(outputId = "plot2")),
-              tabPanel("Map", leafletOutput(outputId = "mymap"))))
+  titlePanel("College Information"),
+  tabsetPanel(type="tabs",
+              tabPanel("Comparison", sliderInput(inputId = "year_range", label = "Year Range", 
+                                                 min = 2008, max=2017, value=c(2008,2017), sep = ""),
+                       selectInput("College1", "College 1:", 
+                                   choices=unique(tidy_Endowments$College)),
+                       selectInput("College2", "College 2:", 
+                                   choices=unique(tidy_Endowments$College)),
+                       helpText("These plots show the changes in the selected colleges' rankings for the selected range."),
+                       tabsetPanel(type = "tabs",
+                                   tabPanel("Endowments", plotlyOutput(outputId = "plot1")),
+                                   tabPanel("Ranking", plotlyOutput(outputId = "plot2"))
+                       )),
+              tabPanel("Map", leafletOutput(outputId="mymap")),
+              tabPanel("Search", helpText("Input your parameters to find colleges that match your search!"),
+                       textInput("tuition", "What should tuition be?" )))
+              
+  
+  
+  )
   
 
 server <- function(input, output) {
