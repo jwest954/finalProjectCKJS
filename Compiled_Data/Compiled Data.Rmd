@@ -149,6 +149,13 @@ Compiled_Data <- Region_Lon_Lat_State %>%
 
 ```
 
+```{r}
+tidy_Compiled_Data <- Compiled_Data %>% 
+  separate(College, into = c("college", "State"), sep = "\\(") %>% 
+  mutate(state = str_replace(str_trim(State), "\\)", "")) %>% 
+  select(-State)
+
+```
 
 ```{r}
 write.csv(Compiled_Data, file="Compiled_Data.csv")
