@@ -35,7 +35,13 @@ Compiled_Data$SOC_type<-ifelse(Compiled_Data$SOC <=10, "low",
 
 
 
-
+CompData <-Compiled_Data %>% 
+  mutate(international_type=ifelse(international <=10, "low", 
+                                   ifelse(international >10 & international <= 20, "intermediate",
+                                          ifelse(international > 20, "high", "other"))), 
+         SOC_type=ifelse(SOC <=10, "low", 
+                         ifelse(SOC >10 & SOC <= 25, "intermediate",
+                                ifelse(SOC > 25, "high", "other"))))
 
 
 
