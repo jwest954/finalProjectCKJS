@@ -35,10 +35,8 @@ Swarthmore,large suburb,semester,Private not-for-profit,0.095,DIII,1380,1550,31,
 Trinity,midsize city,semester,Private not-for-profit,0.335,DIII,1300,1460,29,32,24962
 "U of South, Sewanee",distant rural,semester,Private not-for-profit,0.652,DIII,NA,NA,NA,NA,34564
 Vassar,large suburb,semester,Private not-for-profit,0.246,DIII,1370,1510,31,33,25211
-Union (NY),small city,trimester,private-not-for-profit,0.387,DI,NA,NA,NA,NA,39538
+Union,small city,trimester,private-not-for-profit,0.387,DI,NA,NA,NA,NA,39538
 Washington & Lee,distant town,four-one-four,private-not-for-profit,0.212,DIII,1348,1490,31,34,21918
 Wellesley,large suburb,semester,private-not-for-profit,0.195,DIII,1330,1520,30,34,20826
-Wesleyan U (CT),small city,semester,private-not-for-profit,0.174,DIII,NA,NA,NA,NA,21236
+Wesleyan U,small city,semester,private-not-for-profit,0.174,DIII,NA,NA,NA,NA,21236
 Williams,fringe town,four-one-four,private-not-for-profit,0.129,DIII,1410,1550,32,35,18979
-,,,,,,,,,,
-https://nces.ed.gov/ipeds/datacenter/InstitutionProfile.aspx?unitId=acb4b1b3b1b1,,,,,,,,,,
