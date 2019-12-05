@@ -8,6 +8,7 @@ library(readxl)
 library(leaflet)
 library(maps)
 library(maptools)
+library(readxl)
 
 Endowments <- read_csv("Endowments.csv")
 
@@ -31,7 +32,6 @@ tidy_USNews_Rankings <- USNews_Rankings %>%
                names_to = "year", 
                values_to = "ranking", names_ptypes = list(year=integer()))
 #Uploading data for the map 
-library(readxl)
 map_data <- read_excel("../map_data/map-data.xlsx")
 
 #tidying map data
@@ -56,29 +56,38 @@ full_map_data<- map_data_longer %>%
 ui <- fluidPage(
   titlePanel("College Information"),
   tabsetPanel(type="tabs",
+              tabPanel("Search", helpText("Input your parameters to find colleges that match your search!
+                                          NOTE: Data is for 2017"),
+                       splitLayout(
+                         textInput("tuition", "What should max tuition be?" ),
+                         selectInput("Region", "What region should the school be in?",
+                                     choices=unique(Compiled_Data$Region)),
+                         textInput("rank", "How should the school be ranked?")),
+                       textInput("testScore", "ACT or SAT score"),
+                       radioButtons("percentile", "Where would you like to fall?", 
+                                    choices = c("Top 25%", "Middle 50%", "Bottom 25%")),
+                       tableOutput(outputId = "searchlist")),
               tabPanel("Comparison", sliderInput(inputId = "year_range", label = "Year Range", 
                                                  min = 2008, max=2017, value=c(2008,2017), sep = ""),
-                       selectInput("College1", "College 1:", 
+                       splitLayout(
+                         selectInput("College1", "College 1:", 
                                    choices=unique(tidy_Endowments$College)),
                        selectInput("College2", "College 2:", 
-                                   choices=unique(tidy_Endowments$College)),
+                                   choices=unique(tidy_Endowments$College))
+                       ),
                        helpText("These plots show the changes in the selected colleges' rankings for the selected range."),
                        tabsetPanel(type = "tabs",
                                    tabPanel("Endowments", plotlyOutput(outputId = "plot1")),
                                    tabPanel("Ranking", plotlyOutput(outputId = "plot2"))
                        )),
-              tabPanel("Map", leafletOutput(outputId="mymap")),
-              tabPanel("Search", helpText("Input your parameters to find colleges that match your search!
-                                          NOTE: Data is for 2017"),
-                       textInput("tuition", "What should max tuition be?" ),
-                       selectInput("Region", "What region should the school be in?",
-                                   choices=unique(Compiled_Data$Region)),
-                       textInput("rank", "How should the school be ranked?"),
-                       tableOutput(outputId = "searchlist")))
+              tabPanel("Map", leafletOutput(outputId="mymap"))
+              
+             
+  ))
               
   
   
-  )
+  
   
 
 server <- function(input, output) {
@@ -107,7 +116,9 @@ server <- function(input, output) {
                                     select(-X1, -lat, -lon, -year) %>% 
                                     filter(tuition<input$tuition) %>% 
                                     filter(Region==input$Region) %>% 
-                                    filter(rank<=input$rank)
+                                    filter(rank<=input$rank) #%>% 
+                                    #ifelse(input$percentile>=37, 
+                                    
                                   )
      
 }
