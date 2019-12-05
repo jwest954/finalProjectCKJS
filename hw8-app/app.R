@@ -9,6 +9,7 @@ library(leaflet)
 library(maps)
 library(maptools)
 library(readxl)
+library(shinythemes)
 
 Endowments <- read_csv("Endowments.csv")
 
@@ -107,6 +108,7 @@ CompData<-Compiled_Data %>%
                                  ifelse(rank >36, "high", "other")))) 
 
 ui <- fluidPage(
+  theme = shinytheme("united"),
   titlePanel("College Information"),
   tabsetPanel(type="tabs",
               tabPanel("Search", helpText("Input your parameters to find colleges that match your search!
