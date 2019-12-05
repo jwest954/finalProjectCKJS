@@ -52,6 +52,33 @@ map_data_lon <-map_data %>%
 full_map_data<- map_data_longer %>% 
   full_join(map_data_lon, by=c("College", "year", "Region","lon", "lat", "State"))
 
+#Cathegorizing data for map 
+CompData<-Compiled_Data %>% 
+  mutate(international_type=ifelse(international <=10, "low", 
+                                   ifelse(international >10 & international <= 20, "intermediate",
+                                          ifelse(international > 20, "high", "other"))), 
+         SOC_type=ifelse(SOC <=10, "low", 
+                         ifelse(SOC >10 & SOC <= 25, "intermediate",
+                                ifelse(SOC > 25, "high", "other"))),
+         Female_type=ifelse(female<=47,"low",
+                            ifelse(female >47 & female <=53, "intermediate",
+                                   ifelse(female >53, "high", "other"))),
+         retention_type= ifelse(retention<=92, "low",
+                                ifelse(retention>92 & retention<=96,"intermediate",
+                                       ifelse(retention >96, "high", "other"))),  
+         
+         graduation_type=ifelse(graduation<=85, "low",
+                                ifelse(graduation>85 & graduation<=92,"intermediate",
+                                       ifelse(graduation >92, "high", "other"))), 
+         
+         tuition_type=ifelse(tuition<=51119, "low",
+                             ifelse(tuition>51119 & tuition<=61750,"intermediate",
+                                    ifelse(tuition >61750, "high", "other"))), 
+         rank_type=ifelse(rank<=10, "low",
+                          ifelse(rank>10 & rank<=36,"intermediate",
+                                 ifelse(rank >36, "high", "other")))) 
+
+
 #Building pallettes for map
 pal1 <- colorFactor(
   palette = c('blue', 'yellow', 'red'),
@@ -81,31 +108,6 @@ pal7<-colorFactor(
   palette = c('blue', 'yellow', 'red'),
   domain = CompData$rank_type)
 
-#Cathegorizing data for map 
-CompData<-Compiled_Data %>% 
-  mutate(international_type=ifelse(international <=10, "low", 
-                                   ifelse(international >10 & international <= 20, "intermediate",
-                                          ifelse(international > 20, "high", "other"))), 
-         SOC_type=ifelse(SOC <=10, "low", 
-                         ifelse(SOC >10 & SOC <= 25, "intermediate",
-                                ifelse(SOC > 25, "high", "other"))),
-         Female_type=ifelse(female<=47,"low",
-                            ifelse(female >47 & female <=53, "intermediate",
-                                   ifelse(female >53, "high", "other"))),
-         retention_type= ifelse(retention<=92, "low",
-                                ifelse(retention>92 & retention<=96,"intermediate",
-                                       ifelse(retention >96, "high", "other"))),  
-         
-         graduation_type=ifelse(graduation<=85, "low",
-                                ifelse(graduation>85 & graduation<=92,"intermediate",
-                                       ifelse(graduation >92, "high", "other"))), 
-         
-         tuition_type=ifelse(tuition<=51119, "low",
-                             ifelse(tuition>51119 & tuition<=61750,"intermediate",
-                                    ifelse(tuition >61750, "high", "other"))), 
-         rank_type=ifelse(rank<=10, "low",
-                          ifelse(rank>10 & rank<=36,"intermediate",
-                                 ifelse(rank >36, "high", "other")))) 
 
 ui <- fluidPage(
   theme = shinytheme("united"),
