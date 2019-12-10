@@ -13,29 +13,29 @@ library(shinythemes)
 
 Endowments <- read_csv("Endowments.csv")
 
-Compiled_Data <- read_csv("Compiled_Data.csv")
-
 #tidy the data by pivoting it
 tidy_Endowments <- Endowments %>% 
   pivot_longer(cols = starts_with("20"),
                names_to = "year", 
                values_to = "endowment", names_ptypes = list(year=integer())) 
 
-#read in the second dataset. Make sure it's still in the right location!
-#The ../ indicates "go out one folder" 
+#The .././ indicates "go out one folder, then in one folder" 
 USNews_Rankings <- read_excel(".././Compiled_Data/PCDB_USNews_Rankings.xlsx", 
                                  range = "A2:K43") %>% 
   rename(College = ...1)
 
-#This tidys the second dataset by pivoting it
+#tidy the data by pivoting it
 tidy_USNews_Rankings <- USNews_Rankings %>% 
   pivot_longer(cols = starts_with("20"),
                names_to = "year", 
                values_to = "ranking", names_ptypes = list(year=integer()))
+
+Compiled_Data <- read_csv("Compiled_Data.csv")
+
 #Uploading data for the map 
 map_data <- read_excel("../map_data/map-data.xlsx")
 
-#tidying map data
+#tidy the map data
 map_data_longer <- map_data %>% 
   select(-1*starts_with("20")) %>% 
   pivot_longer(cols = starts_with("R20"),
@@ -48,6 +48,7 @@ map_data_lon <-map_data %>%
   pivot_longer(cols=starts_with("20"),
                names_to = "year",
                values_to = "endowment")
+
 #Full map data (like the actual one)
 full_map_data<- map_data_longer %>% 
   full_join(map_data_lon, by=c("College", "year", "Region","lon", "lat", "State"))
@@ -116,33 +117,32 @@ pal8<-colorFactor(
 
 ui <- fluidPage(
   theme = shinytheme("united"),
-  titlePanel("College Information"),
+  titlePanel("SHORTLIST"),
+  p(strong("A comparison tool for liberal arts colleges")),
+  br(),
   tabsetPanel(type="tabs",
-              tabPanel("Search", helpText("Input your parameters to find colleges that match your search!
-                                          NOTE: Data is for 2017"),
-                       splitLayout(
+        tabPanel("Search", helpText(strong("Input your parameters to find colleges that match your search! NOTE: Data is for 2017")),
+                splitLayout(
                          textInput("tuition", "What should max tuition be?" ),
                          selectInput("Region", "What region should the school be in?",
-                                     choices=unique(Compiled_Data$Region)),
+                                    choices=unique(Compiled_Data$Region)),
                          textInput("rank", "How should the school be ranked?")),
-                       textInput("testScore", "ACT or SAT score"),
-                       radioButtons("percentile", "Where would you like to fall?", 
+                         textInput("testScore", "ACT or SAT score"),
+                         radioButtons("percentile", "Where would you like to fall?", 
                                     choices = c("Top 25%", "Middle 50%", "Bottom 25%")),
-                       tableOutput(outputId = "searchlist")),
-              tabPanel("Comparison", sliderInput(inputId = "year_range", label = "Year Range", 
+                        tableOutput(outputId = "searchlist")),
+        tabPanel("Comparison", sliderInput(inputId = "year_range", label = "Year Range", 
                                                  min = 2008, max=2017, value=c(2008,2017), sep = ""),
-                       splitLayout(
+                splitLayout(
                          selectInput("College1", "College 1:", 
                                    choices=unique(tidy_Endowments$College)),
-                       selectInput("College2", "College 2:", 
-                                   choices=unique(tidy_Endowments$College))
-                       ),
-                       helpText("These plots show the changes in the selected colleges' rankings for the selected range."),
-                       tabsetPanel(type = "tabs",
+                         selectInput("College2", "College 2:", 
+                                   choices=unique(tidy_Endowments$College))),
+                         helpText("These plots show the changes in the selected colleges' rankings for the selected range."),
+                         tabsetPanel(type = "tabs",
                                    tabPanel("Endowments", plotlyOutput(outputId = "plot1")),
-                                   tabPanel("Ranking", plotlyOutput(outputId = "plot2"))
-                       )),
-              tabPanel("Map", leafletOutput(outputId="mymap"),
+                                   tabPanel("Ranking", plotlyOutput(outputId = "plot2")))),
+        tabPanel("Map", leafletOutput(outputId="mymap"),
                        absolutePanel(top = 200, left = 20, 
                                      checkboxInput("IS", "International Students", FALSE),
                                      checkboxInput("soc", "Students of Color", FALSE),
@@ -153,14 +153,12 @@ ui <- fluidPage(
                                      checkboxInput("rank", "Rank", FALSE),
                                      checkboxInput("fulltime", "Student body size", FALSE)))
               
-             
-  ))
+             ))
               
   
   
   
   
-
 server <- function(input, output) {
   output$plot1 <- renderPlotly({print(ggplotly(tidy_Endowments %>% 
                                          filter(College ==input$College1 | College ==input$College2) %>% 
