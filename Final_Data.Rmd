@@ -1,0 +1,36 @@
+---
+title: "test"
+author: "Kellie Stellmach"
+date: "12/10/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(readr)
+library(readxl)
+```
+
+```{r}
+Compiled_Data_2017 <- tidy_Compiled_Data %>% 
+  filter(year == 2017)
+```
+
+```{r}
+College_Data <- read_csv("College_Data.csv") %>% 
+  rename(college = X1) 
+```
+
+```{r}
+Final_Data_2017 <- College_Data %>% 
+  full_join(Compiled_Data_2017, by = "college")
+```
+
+```{r}
+write.csv(Compiled_Data_2017, file="Compiled_Data_2017.csv")
+```
+
