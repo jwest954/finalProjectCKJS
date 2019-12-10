@@ -20,6 +20,12 @@ Region_Lon_Lat_State <- read_excel("Region_Lon_Lat_State.xlsx")
 ```
 
 ```{r}
+College_Data <- read_csv("College_Data.csv") %>% 
+  rename(College = X1)
+```
+
+
+```{r}
 Fulltime_Enrollment <- read_excel("PCDB_fulltime and parttime enrollment.xlsx", 
     sheet = "Fulltime Enrollments", range = "A6:K47", 
     col_types = c("text", "numeric", "numeric", 
@@ -145,16 +151,22 @@ Compiled_Data <- Region_Lon_Lat_State %>%
   full_join(Graduation_Rates, by = c("College", "year")) %>% 
   full_join(Tuition, by = c("College", "year")) %>% 
   full_join(USNews_Rankings, by = c("College", "year")) %>% 
-  full_join(Endowment, by = c("College", "year"))
+  full_join(Endowment, by = c("College", "year")) %>% 
+  full_join(College_Data, by c (""))
 
 ```
 
 ```{r}
 tidy_Compiled_Data <- Compiled_Data %>% 
-  separate(College, into = c("college", "State"), sep = "\\(") %>% 
+  separate(College, into = c("college", "State"), sep = "\\(") %>%
+  mutate(college = str_trim(college)) %>% 
   mutate(state = str_replace(str_trim(State), "\\)", "")) %>% 
   select(-State)
 
+```
+
+```{r}
+write.csv(tidy_Compiled_Data, file="tidy_Compiled_Data.csv")
 ```
 
 ```{r}
