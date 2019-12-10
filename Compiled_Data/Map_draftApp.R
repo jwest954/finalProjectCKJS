@@ -32,7 +32,7 @@ pal2 <- colorFactor(
                        # ifelse(Compiled_Data$SOC >10 & Compiled_Data$SOC <= 25, "intermediate",
                        # ifelse(Compiled_Data$SOC > 25, "high", "other")))
 
-
+Compiled_Data <- read_csv("Compiled_Data.csv")
 CompData<-Compiled_Data %>% 
   mutate(international_type=ifelse(international <=10, "low", 
                             ifelse(international >10 & international <= 20, "intermediate",

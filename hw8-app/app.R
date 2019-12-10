@@ -60,7 +60,7 @@ CompData<-Compiled_Data %>%
          SOC_type=ifelse(SOC <=10, "low", 
                          ifelse(SOC >10 & SOC <= 25, "intermediate",
                                 ifelse(SOC > 25, "high", "other"))),
-         Female_type=ifelse(female<=47,"low",
+         female_type=ifelse(female<=47,"low",
                             ifelse(female >47 & female <=53, "intermediate",
                                    ifelse(female >53, "high", "other"))),
          retention_type= ifelse(retention<=92, "low",
@@ -76,7 +76,8 @@ CompData<-Compiled_Data %>%
                                     ifelse(tuition >61750, "high", "other"))), 
          rank_type=ifelse(rank<=10, "low",
                           ifelse(rank>10 & rank<=36,"intermediate",
-                                 ifelse(rank >36, "high", "other")))) 
+                                 ifelse(rank >36, "high", "other"))))
+         
 
 
 #Building pallettes for map
@@ -107,6 +108,10 @@ pal6<-colorFactor(
 pal7<-colorFactor(
   palette = c('blue', 'yellow', 'red'),
   domain = CompData$rank_type)
+
+pal8<-colorFactor(
+  palette = 'darkgrey',
+  domain = CompData$fulltime)
 
 
 ui <- fluidPage(
@@ -145,7 +150,8 @@ ui <- fluidPage(
                                      checkboxInput("retention", "Retention Rate", FALSE),
                                      checkboxInput("graduation", "Graduation Rate", FALSE),
                                      checkboxInput("tuition", "Tuition Cost", FALSE),
-                                     checkboxInput("rank", "Rank", FALSE)))
+                                     checkboxInput("rank", "Rank", FALSE),
+                                     checkboxInput("fulltime", "Student body size", FALSE)))
               
              
   ))
@@ -172,12 +178,12 @@ server <- function(input, output) {
 
   output$mymap <-renderLeaflet({
     leaflet(data) %>% 
-      setView(lng = -99, lat = 45, zoom = 2)  %>% #setting the view over ~ center of North America
+      setView(lng = -99, lat = 45, zoom = 2) %>% 
       addTiles() %>% 
       addCircles(data = CompData %>% filter(year==2017),
                  lat = ~ lat, lng = ~ lon, label = ~as.character(paste0("College: ", sep = " ", College)), 
-                 weight = 1, radius = ~sqrt(fulltime)*1500, popup = ~ College , 
-                 color = ~gray,
+                 weight = 1, popup = ~ College , 
+                 radius=20000, color = ~gray,
                  fillOpacity = 0.5)
   })
   
@@ -208,13 +214,16 @@ server <- function(input, output) {
     }
   })
   
+  
+  
+  
   observe({
     proxy3 <- leafletProxy("mymap", data= CompData %>% filter(year==2017))
     proxy3 %>% clearMarkers()
     if (input$female) {
       proxy3 %>% addCircleMarkers(lat = ~ lat, lng = ~ lon, stroke = FALSE, color = ~pal3(female_type), fillOpacity = 0.2,  
                                   label = ~as.character(paste0(College, sep = " ", female))) %>%
-        addLegend("bottomright", pal = pal1, values = CompData$female_type,
+        addLegend("bottomright", pal = pal3, values = CompData$female_type,
                   title = "Female Ratio",
                   opacity = 3)}
     else {
@@ -226,7 +235,8 @@ server <- function(input, output) {
     proxy4 <- leafletProxy("mymap", data= CompData %>% filter(year==2017))
     proxy4 %>% clearMarkers()
     if (input$retention) {
-      proxy1 %>% addCircleMarkers(lat = ~ lat, lng = ~ lon, stroke = FALSE, color = ~pal4(retention_type), fillOpacity = 0.2,  
+      proxy4 %>% addCircleMarkers(lat = ~ lat, lng = ~ lon, stroke = FALSE,
+                                  color = ~pal4(retention_type), fillOpacity = 0.2,  
                                   label = ~as.character(paste0(College, sep = " ", retention))) %>%
         addLegend("bottomright", pal = pal4, values = CompData$retention_type,
                   title = "Retention Rate",
@@ -256,7 +266,7 @@ server <- function(input, output) {
     if (input$tuition) {
       proxy6 %>% addCircleMarkers(lat = ~ lat, lng = ~ lon, stroke = FALSE, color = ~pal6(tuition_type), fillOpacity = 0.2,  
                                   label = ~as.character(paste0(College, sep = " ", tuition))) %>%
-        addLegend("bottomright", pal = pal1, values = CompData$tuition_type,
+        addLegend("bottomright", pal = pal6, values = CompData$tuition_type,
                   title = "Tuition Cost",
                   opacity = 3)}
     else {
@@ -268,15 +278,34 @@ server <- function(input, output) {
     proxy7 <- leafletProxy("mymap", data= CompData %>% filter(year==2017))
     proxy7 %>% clearMarkers()
     if (input$rank) {
-      proxy7 %>% addCircleMarkers(lat = ~ lat, lng = ~ lon, stroke = FALSE, color = ~pal7(rank_type), fillOpacity = 0.2,  
+    proxy7 %>% addCircleMarkers(lat = ~ lat, lng = ~ lon, stroke = FALSE, color = ~pal7(rank_type), fillOpacity = 0.2,  
                                   label = ~as.character(paste0(College, sep = " ", rank))) %>%
-        addLegend("bottomright", pal = pal7, values = CompData$rank_type,
+                addLegend("bottomright", pal = pal7, values = CompData$rank_type,
                   title = "Rank cathegory",
                   opacity = 3)}
     else {
       proxy7 %>% clearMarkers() %>% clearControls()
     }
   })
+  
+  observe({
+    proxy8 <- leafletProxy("mymap", data= CompData %>% filter(year==2017))
+    proxy8 %>% clearMarkers()
+    if (input$fulltime) {
+    proxy8 %>% addCircles(lat = ~ lat, lng = ~ lon, stroke = FALSE, color = ~grey,
+                           radius = ~sqrt(fulltime)*1500, 
+                           fillOpacity = 0.2,  
+                           label = ~as.character(paste0(College, sep = " ", fulltime))) #%>%
+       # addLegend("bottomright",pal = pal8, #got rid of this part because the values were showing in the legend box (like all of them -.-)
+                  #values = CompData$fulltime,
+                  #title = "Student body size",
+                  #opacity = 3)
+        }
+    else {
+      proxy8 %>% clearMarkers() %>% clearControls()
+    }
+  })
+  
  
  output$searchlist <- renderTable(Compiled_Data %>% filter(year==2017) %>% 
                                     select(-X1, -lat, -lon, -year) %>% 
