@@ -23,8 +23,8 @@ tidy_Endowments <- Endowments %>%
 
 #read in the second dataset. Make sure it's still in the right location!
 #The ../ indicates "go out one folder" 
-USNews_Rankings <- read_excel("../PCDB_USNews_Rankings.xlsx", 
-                              sheet = "US News Ranks", range = "A2:K43") %>% 
+USNews_Rankings <- read_excel(".././Compiled_Data/PCDB_USNews_Rankings.xlsx", 
+                                 range = "A2:K43") %>% 
   rename(College = ...1)
 
 #This tidys the second dataset by pivoting it
