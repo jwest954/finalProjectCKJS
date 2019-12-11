@@ -131,8 +131,7 @@ ui <- fluidPage(
                          radioButtons("percentile", "Where would you like to fall?", 
                                     choices = c("Top 25%", "Middle 50%", "Bottom 25%")),
                         tableOutput(outputId = "searchlist")),
-        tabPanel("Comparison", sliderInput(inputId = "year_range", label = "Year Range", 
-                                                 min = 2008, max=2017, value=c(2008,2017), sep = ""),
+        tabPanel("Comparison",
                 splitLayout(
                          selectInput("College1", "College 1:", 
                                    choices=unique(tidy_Endowments$College)),
