@@ -117,8 +117,9 @@ pal8<-colorFactor(
 
 ui <- fluidPage(
   theme = shinytheme("united"),
-  titlePanel("SHORTLIST"),
-  p(strong("A comparison tool for liberal arts colleges")),
+  br(),
+  img(src = "SLlogo.png", height = 100, width = 300),
+  br(),
   br(),
   tabsetPanel(type="tabs",
         tabPanel("Search", helpText(strong("Input your parameters to find colleges that match your search! NOTE: Data is for 2017")),
