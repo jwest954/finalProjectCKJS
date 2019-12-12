@@ -13,6 +13,8 @@ library(shinythemes)
 
 Endowments <- read_csv("Endowments.csv")
 
+Final_Data_2017 <- read_csv("hw8-app/Final_Data_2017.csv")
+
 #tidy the data by pivoting it
 tidy_Endowments <- Endowments %>% 
   pivot_longer(cols = starts_with("20"),
@@ -322,8 +324,10 @@ server <- function(input, output) {
                                     select(-X1, -lat, -lon, -year) %>% 
                                     filter(tuition<input$tuition) %>% 
                                     filter(Region==input$Region) %>% 
-                                    filter(rank<=input$rank) #%>% 
-                                    #ifelse(input$percentile>=37, 
+                                    filter(rank<=input$rank) %>% 
+                                    if (input$percentile>=37) {
+                                      filter()
+                                    } 
                                     
                                   )
      

@@ -16,6 +16,11 @@ library(readxl)
 ```
 
 ```{r}
+tidy_Compiled_Data <- read_csv("tidy_Compiled_Data.csv")
+```
+
+
+```{r}
 Compiled_Data_2017 <- tidy_Compiled_Data %>% 
   filter(year == 2017)
 ```
@@ -32,5 +37,6 @@ Final_Data_2017 <- College_Data %>%
 
 ```{r}
 write.csv(Compiled_Data_2017, file="Compiled_Data_2017.csv")
+write.csv(Final_Data_2017, file="Final_Data_2017.csv")
 ```
 
