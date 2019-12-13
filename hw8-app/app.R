@@ -133,7 +133,7 @@ ui <- fluidPage(
                 flowLayout(
                          textInput("tuition", "What should max tuition be?" ),
                          selectInput("Region", "What region should the school be in?",
-                                    choices=unique(Final_Data_2017$Region)),
+                                    choices=Final_Data_2017$Region),
                          selectInput("calendarsystem", "What calendar system should the school use?",
                                      choices=Final_Data_2017$calendar_system),
                          textInput("acceptancerate", "What should the minimum acceptance rate be?"),
@@ -141,10 +141,10 @@ ui <- fluidPage(
                                      choices = Final_Data_2017$campus),
                          selectInput("division", "What althletic division should the school be in?",
                                      choices = Final_Data_2017$division),
-                         textInput("rank", "How should the school be ranked?")),
+                         textInput("rank", "How should the school be ranked?"),
                          textInput("testScore", "ACT or SAT score"),
                          radioButtons("percentile", "Where would you like to fall?", 
-                                    choices = c("Top 25%", "Middle 50%", "Bottom 25%")),
+                                    choices = c("Top 25%", "Middle 50%", "Bottom 25%"))),
                         tableOutput(outputId = "searchlist")),
         tabPanel("Comparison",
                 flowLayout(
@@ -333,20 +333,16 @@ server <- function(input, output) {
   output$comparison <- renderTable({Compiled_Data %>% filter(year==2017) %>% 
                                     filter(College==input$College1 | College==input$College2)})
 
- output$searchlist <- renderTable(Compiled_Data %>% filter(year==2017) %>% 
+ output$searchlist <- renderTable(Final_Data_2017 %>% 
                                     select(-X1, -lat, -lon, -year) %>% 
                                     filter(tuition<input$tuition) %>% 
                                     filter(Region==input$Region) %>% 
                                     filter(rank<=input$rank) %>% 
                                     filter(division==input$division) %>% 
-                                    filter(calendarsystem==input$calendarsystem) %>% 
+                                    filter(calendar_system==input$calendarsystem) %>% 
                                     filter(campus==input$campus) %>%
-                                    if(input$acceptancerate <= acceptancerate) {
-                                      filter()
-                                    } %>% 
-                                    if (input$percentile>=37) {
-                                      filter()
-                                    })
+                                    filter(acceptance_rate >= input$acceptancerate)
+                                    )
 }
                               
 
