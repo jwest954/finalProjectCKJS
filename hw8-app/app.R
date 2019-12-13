@@ -17,6 +17,7 @@ Final_Data_2017 <- read_csv("Final_Data_2017.csv")
 Final_Data_2017 <- Final_Data_2017 %>% filter(Region !="NA")
                                   
 
+
 #tidy the data by pivoting it
 tidy_Endowments <- Endowments %>% 
   pivot_longer(cols = starts_with("20"),
@@ -81,7 +82,10 @@ CompData<-Compiled_Data %>%
                                     ifelse(tuition >61750, "high", "other"))), 
          rank_type=ifelse(rank<=10, "low",
                           ifelse(rank>10 & rank<=36,"intermediate",
-                                 ifelse(rank >36, "high", "other"))))
+                                 ifelse(rank >36, "high", "other"))),
+         size_type=ifelse(fulltime<=1677, "small",
+                          ifelse(fulltime>1677 & fulltime<=2344,"intermediate",
+                                 ifelse(fulltime >2344, "big", "other"))))
          
 
 
@@ -115,8 +119,8 @@ pal7<-colorFactor(
   domain = CompData$rank_type)
 
 pal8<-colorFactor(
-  palette = 'darkgrey',
-  domain = CompData$fulltime)
+  palette = c('blue', 'yellow', 'red'),
+  domain = CompData$size_type)
 
 
 ui <- fluidPage(
@@ -153,7 +157,8 @@ ui <- fluidPage(
                                    tabPanel("Endowments", plotlyOutput(outputId = "plot1")),
                                    tabPanel("Ranking", plotlyOutput(outputId = "plot2")))),
         tabPanel("Map", leafletOutput(outputId="mymap"),
-                       absolutePanel(top = 200, left = 20, 
+                 helpText("The map shows the location of the colleges classified by color in the categories shown in the panel with data from 2017"),
+                       absolutePanel(top = 250, left = 20, 
                                      checkboxInput("IS", "International Students", FALSE),
                                      checkboxInput("soc", "Students of Color", FALSE),
                                      checkboxInput("female", "Female Ratio", FALSE),
@@ -312,14 +317,13 @@ server <- function(input, output) {
     proxy8 <- leafletProxy("mymap", data= CompData %>% filter(year==2017))
     proxy8 %>% clearMarkers()
     if (input$fulltime) {
-    proxy8 %>% addCircles(lat = ~ lat, lng = ~ lon, stroke = FALSE, color = ~grey,
-                           radius = ~sqrt(fulltime)*1500, 
-                           fillOpacity = 0.2,  
-                           label = ~as.character(paste0(College, sep = " ", fulltime))) #%>%
-       # addLegend("bottomright",pal = pal8, #got rid of this part because the values were showing in the legend box (like all of them -.-)
-                  #values = CompData$fulltime,
-                  #title = "Student body size",
-                  #opacity = 3)
+    proxy8 %>% addCircleMarkers(lat = ~ lat, lng = ~ lon, stroke = FALSE, color = ~pal8(size_type),
+                          fillOpacity = 0.2,  
+                          label = ~as.character(paste0(College, sep = " ", fulltime))) %>%
+        addLegend("bottomright",pal = pal8, 
+                  values = CompData$size_type,
+                  title = "Student body size",
+                  opacity = 3)
         }
     else {
       proxy8 %>% clearMarkers() %>% clearControls()
