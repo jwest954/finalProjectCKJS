@@ -343,7 +343,10 @@ server <- function(input, output) {
                                     filter(calendar_system==input$calendarsystem) %>% 
                                     filter(campus==input$campus) #%>%
                                     # filter(acceptance_rate >= input$acceptancerate)
-                                    })
+                                    }
+                                    # if (output$searchlist = NULL) {
+                                    # "No colleges match your search"}
+                                    )
 }
                               
 
