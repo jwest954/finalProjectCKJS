@@ -14,6 +14,8 @@ library(shinythemes)
 Endowments <- read_csv("Endowments.csv")
 
 Final_Data_2017 <- read_csv("Final_Data_2017.csv")
+Final_Data_2017 <- Final_Data_2017 %>% filter(Region !="NA")
+                                  
 
 #tidy the data by pivoting it
 tidy_Endowments <- Endowments %>% 
@@ -120,14 +122,14 @@ pal8<-colorFactor(
 ui <- fluidPage(
   theme = shinytheme("united"),
   br(),
-  img(src = "SLlogo.png", height = 100, width = 300),
+  img(src = "../www/SLlogo.png", height = 100, width = 300),
   br(),
   tabsetPanel(type="tabs",
         tabPanel("Search", helpText(strong("Input your parameters to find colleges that match your search! NOTE: Data is for 2017")),
-                splitLayout(
+                flowLayout(
                          textInput("tuition", "What should max tuition be?" ),
                          selectInput("Region", "What region should the school be in?",
-                                    choices=unique(Compiled_Data$Region)),
+                                    choices=unique(Final_Data_2017$Region)),
                          selectInput("calendarsystem", "What calendar system should the school use?",
                                      choices=Final_Data_2017$calendar_system),
                          textInput("acceptancerate", "What should the minimum acceptance rate be?"),
@@ -141,7 +143,7 @@ ui <- fluidPage(
                                     choices = c("Top 25%", "Middle 50%", "Bottom 25%")),
                         tableOutput(outputId = "searchlist")),
         tabPanel("Comparison",
-                splitLayout(
+                flowLayout(
                          selectInput("College1", "College 1:", 
                                    choices=unique(tidy_Endowments$College)),
                          selectInput("College2", "College 2:", 
