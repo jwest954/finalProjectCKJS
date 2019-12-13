@@ -15,7 +15,6 @@ Endowments <- read_csv("Endowments.csv")
 
 Final_Data_2017 <- read_csv("Final_Data_2017.csv")
 Final_Data_2017 <- Final_Data_2017 %>% filter(Region !="NA")
-                                  
 
 
 #tidy the data by pivoting it
@@ -131,19 +130,19 @@ ui <- fluidPage(
   tabsetPanel(type="tabs",
         tabPanel("Search", helpText(strong("Input your parameters to find colleges that match your search! NOTE: Data is for 2017")),
                 flowLayout(
-                         #numericInput("tuition", "What should max tuition be?", 60000, 50000, 70000, 5000),
-                         selectInput("Region", "What region should the school be in?",
+                         #numericInput("tuition", "Maximum tuition", 60000, 50000, 70000, 5000),
+                         selectInput("Region", "Region",
                                      choices=Final_Data_2017$Region),
-                         selectInput("calendarsystem", "What calendar system should the school use?",
+                         selectInput("calendarsystem", "Calendar system",
                                       choices=Final_Data_2017$calendar_system),
-                         # textInput("acceptancerate", "What should the minimum acceptance rate be?"),
-                         selectInput("campus", "Where should the campus be located?",
+                         # textInput("acceptancerate", "Minimum acceptance rate"),
+                         selectInput("campus", "Campus type",
                                       choices = Final_Data_2017$campus),
-                         selectInput("division", "What althletic division should the school be in?",
+                         selectInput("division", "Athletic division",
                                       choices = Final_Data_2017$division)#,
-                         #textInput("rank", "How should the school be ranked?")#,
+                         #textInput("rank", "Minimum school rank")#,
                          # textInput("testScore", "ACT or SAT score"),
-                         # radioButtons("percentile", "Where would you like to fall?", 
+                         # radioButtons("percentile", "Percentile", 
                          #            choices = c("Top 25%", "Middle 50%", "Bottom 25%"))
                          ),
                         tableOutput(outputId = "searchlist")),
@@ -335,7 +334,7 @@ server <- function(input, output) {
                                     filter(College==input$College1 | College==input$College2)})
 
  output$searchlist <- renderTable({Final_Data_2017 %>% 
-                                    select(-X1, -lat, -lon, -year) %>% 
+                                    select(-X1, -lat, -lon, -year, X1_1, -type) %>% 
                                     #filter(tuition<input$tuition) #%>% 
                                     filter(Region==input$Region) %>% 
                                     # filter(rank<=input$rank) %>% 
@@ -344,7 +343,7 @@ server <- function(input, output) {
                                     filter(campus==input$campus) #%>%
                                     # filter(acceptance_rate >= input$acceptancerate)
                                     }
-                                    # if (output$searchlist = NULL) {
+                                    # if (nrow(output$searchlist) = NULL) {
                                     # "No colleges match your search"}
                                     )
 }
