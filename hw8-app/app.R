@@ -131,20 +131,21 @@ ui <- fluidPage(
   tabsetPanel(type="tabs",
         tabPanel("Search", helpText(strong("Input your parameters to find colleges that match your search! NOTE: Data is for 2017")),
                 flowLayout(
-                         textInput("tuition", "What should max tuition be?" ),
+                         #numericInput("tuition", "What should max tuition be?", 60000, 50000, 70000, 5000),
                          selectInput("Region", "What region should the school be in?",
-                                    choices=Final_Data_2017$Region),
+                                     choices=Final_Data_2017$Region),
                          selectInput("calendarsystem", "What calendar system should the school use?",
-                                     choices=Final_Data_2017$calendar_system),
-                         textInput("acceptancerate", "What should the minimum acceptance rate be?"),
+                                      choices=Final_Data_2017$calendar_system),
+                         # textInput("acceptancerate", "What should the minimum acceptance rate be?"),
                          selectInput("campus", "Where should the campus be located?",
-                                     choices = Final_Data_2017$campus),
+                                      choices = Final_Data_2017$campus),
                          selectInput("division", "What althletic division should the school be in?",
-                                     choices = Final_Data_2017$division),
-                         textInput("rank", "How should the school be ranked?"),
-                         textInput("testScore", "ACT or SAT score"),
-                         radioButtons("percentile", "Where would you like to fall?", 
-                                    choices = c("Top 25%", "Middle 50%", "Bottom 25%"))),
+                                      choices = Final_Data_2017$division)#,
+                         #textInput("rank", "How should the school be ranked?")#,
+                         # textInput("testScore", "ACT or SAT score"),
+                         # radioButtons("percentile", "Where would you like to fall?", 
+                         #            choices = c("Top 25%", "Middle 50%", "Bottom 25%"))
+                         ),
                         tableOutput(outputId = "searchlist")),
         tabPanel("Comparison",
                 flowLayout(
@@ -335,13 +336,13 @@ server <- function(input, output) {
 
  output$searchlist <- renderTable({Final_Data_2017 %>% 
                                     select(-X1, -lat, -lon, -year) %>% 
-                                    filter(tuition<input$tuition) %>% 
+                                    #filter(tuition<input$tuition) #%>% 
                                     filter(Region==input$Region) %>% 
-                                    filter(rank<=input$rank) %>% 
+                                    # filter(rank<=input$rank) %>% 
                                     filter(division==input$division) %>% 
                                     filter(calendar_system==input$calendarsystem) %>% 
-                                    filter(campus==input$campus) %>%
-                                    filter(acceptance_rate >= input$acceptancerate)
+                                    filter(campus==input$campus) #%>%
+                                    # filter(acceptance_rate >= input$acceptancerate)
                                     })
 }
                               
