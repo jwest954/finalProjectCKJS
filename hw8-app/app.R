@@ -128,6 +128,13 @@ ui <- fluidPage(
                          textInput("tuition", "What should max tuition be?" ),
                          selectInput("Region", "What region should the school be in?",
                                     choices=unique(Compiled_Data$Region)),
+                         selectInput("calendarsystem", "What calendar system should the school use?",
+                                     choices=Final_Data_2017$calendar_system),
+                         textInput("acceptancerate", "What should the minimum acceptance rate be?"),
+                         selectInput("campus", "Where should the campus be located?",
+                                     choices = Final_Data_2017$campus),
+                         selectInput("division", "What althletic division should the school be in?",
+                                     choices = Final_Data_2017$division),
                          textInput("rank", "How should the school be ranked?")),
                          textInput("testScore", "ACT or SAT score"),
                          radioButtons("percentile", "Where would you like to fall?", 
@@ -158,7 +165,7 @@ ui <- fluidPage(
                                choices=unique(Compiled_Data$College)),
                    selectInput("College2", "College 2:", 
                               choices=unique(Compiled_Data$College)),
-                   tableOutput(outputId = "comparison"),
+                   tableOutput(outputId = "comparison")
                  )
                  
                    
@@ -325,13 +332,17 @@ server <- function(input, output) {
                                     filter(tuition<input$tuition) %>% 
                                     filter(Region==input$Region) %>% 
                                     filter(rank<=input$rank) %>% 
+                                    filter(division==input$division) %>% 
+                                    filter(calendarsystem==input$calendarsystem) %>% 
+                                    filter(campus==input$campus) %>%
+                                    if(input$acceptancerate <= acceptancerate) {
+                                      filter()
+                                    } %>% 
                                     if (input$percentile>=37) {
                                       filter()
-                                    } 
-                                    
-                                  )
-     
+                                    })
 }
+                              
 
 
 shinyApp(ui = ui, server = server)
