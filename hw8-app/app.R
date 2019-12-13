@@ -15,6 +15,7 @@ Endowments <- read_csv("Endowments.csv")
 
 Final_Data_2017 <- read_csv("hw8-app/Final_Data_2017.csv")
 
+
 #tidy the data by pivoting it
 tidy_Endowments <- Endowments %>% 
   pivot_longer(cols = starts_with("20"),
