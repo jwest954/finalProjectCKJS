@@ -168,13 +168,13 @@ ui <- fluidPage(
                                      checkboxInput("rank", "Rank", FALSE),
                                      checkboxInput("fulltime", "Student body size", FALSE))),
         tabPanel("Test",
-                   selectInput("College1", "College 1:", 
+                   selectInput("College1", "College 1:",
                                choices=unique(Compiled_Data$College)),
-                   selectInput("College2", "College 2:", 
+                   selectInput("College2", "College 2:",
                               choices=unique(Compiled_Data$College)),
                    tableOutput(outputId = "comparison")
                  )
-                 
+
                    
 
   
@@ -330,10 +330,10 @@ server <- function(input, output) {
     }
   })
   
-  output$comparison <- renderTable({Compiled_Data %>% filter(year==2017) %>% 
+ output$comparison <- renderTable({Compiled_Data %>% filter(year==2017) %>%
                                     filter(College==input$College1 | College==input$College2)})
 
- output$searchlist <- renderTable(Final_Data_2017 %>% 
+ output$searchlist <- renderTable({Final_Data_2017 %>% 
                                     select(-X1, -lat, -lon, -year) %>% 
                                     filter(tuition<input$tuition) %>% 
                                     filter(Region==input$Region) %>% 
@@ -342,7 +342,7 @@ server <- function(input, output) {
                                     filter(calendar_system==input$calendarsystem) %>% 
                                     filter(campus==input$campus) %>%
                                     filter(acceptance_rate >= input$acceptancerate)
-                                    )
+                                    })
 }
                               
 
