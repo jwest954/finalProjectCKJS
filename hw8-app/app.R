@@ -132,14 +132,14 @@ ui <- fluidPage(
                 flowLayout(
                          #numericInput("tuition", "Maximum tuition", 60000, 50000, 70000, 5000),
                          selectInput("Region", "Region",
-                                     choices=Final_Data_2017$Region),
+                                     choices= c(Final_Data_2017$Region, "Any"), selected = "Any"),
                          selectInput("calendarsystem", "Calendar system",
-                                      choices=Final_Data_2017$calendar_system),
+                                      choices=c(Final_Data_2017$calendar_system, "Any"), selected = "Any"),
                          # textInput("acceptancerate", "Minimum acceptance rate"),
                          selectInput("campus", "Campus type",
-                                      choices = Final_Data_2017$campus),
+                                      choices = c(Final_Data_2017$campus, "Any"), selected = "Any"),
                          selectInput("division", "Athletic division",
-                                      choices = Final_Data_2017$division)#,
+                                      choices = c(Final_Data_2017$division, "Any"), selected = "Any")#,
                          #textInput("rank", "Minimum school rank")#,
                          # textInput("testScore", "ACT or SAT score"),
                          # radioButtons("percentile", "Percentile", 
@@ -199,6 +199,7 @@ server <- function(input, output) {
                                                  ggplot(aes(x=year, y=ranking, color=College))+
                                                  geom_line()+
                                                  scale_x_continuous(limits = input$year_range)+
+                                                 scale_y_reverse()+
                                                  coord_cartesian(ylim = c(0, 50), xlim = c(2010,2017))))})
 
   output$mymap <-renderLeaflet({
@@ -336,7 +337,7 @@ server <- function(input, output) {
  output$searchlist <- renderTable({Final_Data_2017 %>% 
                                     select(-X1, -lat, -lon, -year, X1_1, -type) %>% 
                                     #filter(tuition<input$tuition) #%>% 
-                                    filter(Region==input$Region) %>% 
+                                    filter(Region==input$Region)%>% 
                                     # filter(rank<=input$rank) %>% 
                                     filter(division==input$division) %>% 
                                     filter(calendar_system==input$calendarsystem) %>% 
