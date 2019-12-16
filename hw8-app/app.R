@@ -10,12 +10,12 @@ library(maps)
 library(maptools)
 library(readxl)
 library(shinythemes)
-library(DT)
 
 Endowments <- read_csv("Endowments.csv")
 
 Final_Data_2017 <- read_csv("Final_Data_2017.csv")
 Final_Data_2017 <- Final_Data_2017 %>% filter(Region !="NA")
+                                  
 
 
 #tidy the data by pivoting it
@@ -125,31 +125,40 @@ pal8<-colorFactor(
 
 ui <- fluidPage(
   theme = shinytheme("united"),
-  h1("Shortlist"),
-  h4("A comparison tool for liberal arts colleges"),
+  br(),
+  img(src = "../www/SLlogo.png", height = 100, width = 300),
   br(),
   tabsetPanel(type="tabs",
-        tabPanel("User Guide", 
-                 p("First paragraph"),
-                 p("Second paragraph")),
+
+        tabPanel("User Guide",
+                 p(strong("Shortlist User Guide")),
+                 p("Shortlist is a search engine for prospective higher education students who are looking for a liberal arts experience."),
+                 p(strong("Search Tab")),
+                 p("In the “Search” tab, users may input college characteristics, and the engine live updates to display all colleges in the dataset that match the user’s criteria. These search characteristics are tuition, region, rank, athletic division, calendar system, campus type, and user’s SAT/ACT score (user must select which percentile they would like to fall under). College search output includes region, state, number of full time students, number of part time students, percent of international students, percent of students of color (SOC), percent of female students, retention rate, graduation rate, tuition, school rank, and college endowment. The user can view these summarizing values and evaluate the schools."),
+                 p(strong("Comparison Tab")),
+                 p("In the “Comparison” tab, users may directly compare two colleges from the Search tab. The engine uses data from 2008-2017. It displays summary graphs of endowment and school rank over time. The user can use gganimate tools to zoom in on graphs to view fine detail changes over time."),
+                 p(strong("Map Tab")),
+                 p("In the “Map” tab, the user can select one or multiple college variables, and a map will visualize characteristics of the colleges in the data set, based on 2017 data. These characteristics are percent of international students, percent of SOC, percent of female students, retention rate, graduation rate, tuition, and rank."),
+                 p(strong("Considerations")),
+                 p("It is important to note that the data set used in this app is limited to 40 liberal arts colleges in the US. It is primarily useful for students who wish to refine their college search once they have decided to attend a small liberal arts school. This app provides a framework that could be used with a larger data set of schools to expand the scope of the search. Additionally, the data used in this app is from two different sources. One includes data from 2008 to 2017, and the other from 2018.")),
+
         tabPanel("Search", helpText(strong("Input your parameters to find colleges that match your search! NOTE: Data is for 2017")),
                 flowLayout(
-                         numericInput("tuition1", "Maximum tuition", 70000, 50000, 70000, 5000),
-                         selectInput("Region", "Region",
-                                     choices= c(Final_Data_2017$Region, "Any"), selected = "Any"),
-                         selectInput("calendarsystem", "Calendar system",
-                                      choices=c(Final_Data_2017$calendar_system, "Any"), selected = "Any"),
-                         numericInput("acceptancerate", "Minimum acceptance rate", .7, .05, .7, .05),
-                         selectInput("campus", "Campus type",
-                                      choices = c(Final_Data_2017$campus, "Any"), selected = "Any"),
-                         selectInput("division", "Athletic division",
-                                      choices = c(Final_Data_2017$division, "Any"), selected = "Any"),
-                         textInput("rank", "Minimum school rank"),
-                          textInput("testScore", "ACT or SAT score"),
-                          radioButtons("percentile", "Percentile", 
-                                     choices = c("Top 25%", "Middle 50%", "Bottom 25%"))
-                         ),
-                        dataTableOutput(outputId = "searchlist")),
+                         textInput("tuition", "What should max tuition be?" ),
+                         selectInput("Region", "What region should the school be in?",
+                                    choices=unique(Final_Data_2017$Region)),
+                         selectInput("calendarsystem", "What calendar system should the school use?",
+                                     choices=Final_Data_2017$calendar_system),
+                         textInput("acceptancerate", "What should the minimum acceptance rate be?"),
+                         selectInput("campus", "Where should the campus be located?",
+                                     choices = Final_Data_2017$campus),
+                         selectInput("division", "What althletic division should the school be in?",
+                                     choices = Final_Data_2017$division),
+                         textInput("rank", "How should the school be ranked?")),
+                         textInput("testScore", "ACT or SAT score"),
+                         radioButtons("percentile", "Where would you like to fall?", 
+                                    choices = c("Top 25%", "Middle 50%", "Bottom 25%")),
+                        tableOutput(outputId = "searchlist")),
         tabPanel("Comparison",
                 flowLayout(
                          selectInput("xaxisvariable", "x-axis variable", 
@@ -161,7 +170,7 @@ ui <- fluidPage(
                 ),
         tabPanel("Map", leafletOutput(outputId="mymap"),
                  helpText("The map shows the location of the colleges classified by color in the categories shown in the panel with data from 2017"),
-                       absolutePanel(top = 250, left = 20, 
+                  absolutePanel(top = 250, left = 20, 
                                      checkboxInput("IS", "International Students", FALSE),
                                      checkboxInput("soc", "Students of Color", FALSE),
                                      checkboxInput("female", "Female Ratio", FALSE),
@@ -169,7 +178,17 @@ ui <- fluidPage(
                                      checkboxInput("graduation", "Graduation Rate", FALSE),
                                      checkboxInput("tuition", "Tuition Cost", FALSE),
                                      checkboxInput("rank", "Rank", FALSE),
-                                     checkboxInput("fulltime", "Student body size", FALSE)))
+                                     checkboxInput("fulltime", "Student body size", FALSE))),
+                    
+  
+        tabPanel("Test",
+                   selectInput("College1", "College 1:", 
+                               choices=unique(Compiled_Data$College)),
+                   selectInput("College2", "College 2:", 
+                              choices=unique(Compiled_Data$College)),
+                   tableOutput(outputId = "comparison")
+                 )
+                 
                    
 
   
@@ -182,9 +201,25 @@ ui <- fluidPage(
   
   
 server <- function(input, output) {
+<<<<<<< HEAD
   output$comparisongraph <- renderPlotly({print(ggplotly(Final_Data_2017 %>% 
                                          ggplot(aes(x=input$xaxisvariable, y=input$yaxisvariable, color=college))+
                                          geom_point()))})
+=======
+  output$plot1 <- renderPlotly({print(ggplotly(tidy_Endowments %>% 
+                                         filter(College ==input$College1 | College ==input$College2) %>% 
+                                         ggplot(aes(x=year, y=endowment, color=College))+
+                                         geom_line()+
+                                         scale_x_continuous(limits = input$year_range)+
+                                         coord_cartesian(ylim = c(0, 3000))))})
+
+  output$plot2 <- renderPlotly({print(ggplotly(tidy_USNews_Rankings %>% 
+                                                 filter(College ==input$College1 | College ==input$College2) %>% 
+                                                 ggplot(aes(x=year, y=ranking, color=College))+
+                                                 geom_line()+
+                                                 scale_x_continuous(limits = input$year_range)+
+                                                 coord_cartesian(ylim = c(0, 50), xlim = c(2010,2017))))})
+>>>>>>> 05c08c148b75e1de6bd39d786ff5e28de0a71f41
 
   output$mymap <-renderLeaflet({
     leaflet(data) %>% 
@@ -315,7 +350,6 @@ server <- function(input, output) {
     }
   })
   
-
   output$searchlist <- DT::renderDataTable(DT::datatable({
     data <- Final_Data_2017 %>% 
     select(-X1, -lat, -lon, -year, -X1_1, -type) %>%
@@ -333,8 +367,17 @@ server <- function(input, output) {
     if(input$campus != "Any"){
       data <- data[data$campus == input$campus,]
     }
-    # if(input$testScore >= data$act_composite_75){
-    #   data <- data[data$act_composite_75 == input$testScore,]
+    #if(input$testScore >= 37){
+    #   if (input$percentile == "Top 25%"){
+    #     if (data$sat_composite_75 > input$testScore) {
+    #       data <- data[data$sat_composite_75 == input$sat_composite_75,]}}
+    #   if (input$percentile == "Middle 50%)
+    #     if (data$sat_composite_75 > input$testScore or data$sat_composite_25 < input$testScore) {
+      #     data <- data[data$sat_composite_75 == input$sat_composite_75,]},
+    #   if (input$percentile == "Top 75%) {
+    #     if (data$sat_composite_25 < input$testScore {
+    #       data <- data[data$sat_composite_25 == input$sat_composite_25,]})}
+    # else{}
     # }
     data2 <- data %>% 
       rename(`calendar system`=calendar_system,
@@ -358,8 +401,6 @@ server <- function(input, output) {
   }))
   
 }
-
-
                               
 
 
