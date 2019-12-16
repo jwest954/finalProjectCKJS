@@ -201,25 +201,11 @@ ui <- fluidPage(
   
   
 server <- function(input, output) {
-<<<<<<< HEAD
+
   output$comparisongraph <- renderPlotly({print(ggplotly(Final_Data_2017 %>% 
                                          ggplot(aes(x=input$xaxisvariable, y=input$yaxisvariable, color=college))+
                                          geom_point()))})
-=======
-  output$plot1 <- renderPlotly({print(ggplotly(tidy_Endowments %>% 
-                                         filter(College ==input$College1 | College ==input$College2) %>% 
-                                         ggplot(aes(x=year, y=endowment, color=College))+
-                                         geom_line()+
-                                         scale_x_continuous(limits = input$year_range)+
-                                         coord_cartesian(ylim = c(0, 3000))))})
 
-  output$plot2 <- renderPlotly({print(ggplotly(tidy_USNews_Rankings %>% 
-                                                 filter(College ==input$College1 | College ==input$College2) %>% 
-                                                 ggplot(aes(x=year, y=ranking, color=College))+
-                                                 geom_line()+
-                                                 scale_x_continuous(limits = input$year_range)+
-                                                 coord_cartesian(ylim = c(0, 50), xlim = c(2010,2017))))})
->>>>>>> 05c08c148b75e1de6bd39d786ff5e28de0a71f41
 
   output$mymap <-renderLeaflet({
     leaflet(data) %>% 
