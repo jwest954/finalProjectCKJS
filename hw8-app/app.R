@@ -129,8 +129,7 @@ ui <- fluidPage(
   img(src = "../www/SLlogo.png", height = 100, width = 300),
   br(),
   tabsetPanel(type="tabs",
-<<<<<<< HEAD
-=======
+
         tabPanel("User Guide",
                  p(strong("Shortlist User Guide")),
                  p("Shortlist is a search engine for prospective higher education students who are looking for a liberal arts experience."),
@@ -142,7 +141,7 @@ ui <- fluidPage(
                  p("In the “Map” tab, the user can select one or multiple college variables, and a map will visualize characteristics of the colleges in the data set, based on 2017 data. These characteristics are percent of international students, percent of SOC, percent of female students, retention rate, graduation rate, tuition, and rank."),
                  p(strong("Considerations")),
                  p("It is important to note that the data set used in this app is limited to 40 liberal arts colleges in the US. It is primarily useful for students who wish to refine their college search once they have decided to attend a small liberal arts school. This app provides a framework that could be used with a larger data set of schools to expand the scope of the search. Additionally, the data used in this app is from two different sources. One includes data from 2008 to 2017, and the other from 2018.")),
->>>>>>> 88edb8e48c4a7136a2233f04ab98727b929651e1
+
         tabPanel("Search", helpText(strong("Input your parameters to find colleges that match your search! NOTE: Data is for 2017")),
                 flowLayout(
                          textInput("tuition", "What should max tuition be?" ),
