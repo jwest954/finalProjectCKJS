@@ -155,9 +155,8 @@ ui <- fluidPage(
                    selectInput("division", "Athletic division",
                                choices = c(Final_Data_2017$division, "Any"), selected = "Any"),
                    textInput("rank", "Minimum school rank"),
-                   textInput("testScore", "ACT or SAT score"),
-                   radioButtons("percentile", "Percentile", 
-                                choices = c("Top 25%", "Middle 50%", "Bottom 25%"))
+                   textInput("actScore", "ACT score"),
+                   textInput("satScore", "SAT score")
                  ),
                  dataTableOutput(outputId = "searchlist")),
         tabPanel("Comparison",
@@ -341,7 +340,9 @@ server <- function(input, output) {
     data <- Final_Data_2017 %>% 
     select(-X1, -lat, -lon, -year, -X1_1, -type) %>%
     filter(tuition<input$tuition1) %>% 
-    filter(acceptance_rate <= input$acceptancerate)
+    filter(acceptance_rate <= input$acceptancerate) %>% 
+    filter(sat_composite_25 >= input$satScore) %>% 
+    filter(act_composite_25 >= input$actScore)
     if(input$Region != "Any"){
       data <- data[data$Region == input$Region,]
     }
@@ -354,18 +355,7 @@ server <- function(input, output) {
     if(input$campus != "Any"){
       data <- data[data$campus == input$campus,]
     }
-    #if(input$testScore >= 37){
-    #   if (input$percentile == "Top 25%"){
-    #     if (data$sat_composite_75 > input$testScore) {
-    #       data <- data[data$sat_composite_75 == input$sat_composite_75,]}}
-    #   if (input$percentile == "Middle 50%)
-    #     if (data$sat_composite_75 > input$testScore or data$sat_composite_25 < input$testScore) {
-      #     data <- data[data$sat_composite_75 == input$sat_composite_75,]},
-    #   if (input$percentile == "Top 75%) {
-    #     if (data$sat_composite_25 < input$testScore {
-    #       data <- data[data$sat_composite_25 == input$sat_composite_25,]})}
-    # else{}
-    # }
+
     data2 <- data %>% 
       rename(`calendar system`=calendar_system,
              `acceptance rate`=acceptance_rate,
