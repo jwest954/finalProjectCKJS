@@ -133,7 +133,7 @@ ui <- fluidPage(
                  p("Second paragraph")),
         tabPanel("Search", helpText(strong("Input your parameters to find colleges that match your search! NOTE: Data is for 2017")),
                 flowLayout(
-                         #numericInput("tuition", "Maximum tuition", 60000, 50000, 70000, 5000),
+                         numericInput("tuition1", "Maximum tuition", 60000, 50000, 70000, 5000),
                          selectInput("Region", "Region",
                                      choices= c(Final_Data_2017$Region, "Any"), selected = "Any"),
                          selectInput("calendarsystem", "Calendar system",
@@ -329,7 +329,7 @@ server <- function(input, output) {
 
  output$searchlist <- renderTable({Final_Data_2017 %>% 
                                     select(-X1, -lat, -lon, -year, X1_1, -type) %>% 
-                                    #filter(tuition<input$tuition) #%>% 
+                                    filter(tuition<input$tuition1) %>% 
                                     filter(Region==input$Region)%>% 
                                     # filter(rank<=input$rank) %>% 
                                     filter(division==input$division) %>% 
