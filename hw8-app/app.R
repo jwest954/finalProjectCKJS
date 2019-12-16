@@ -124,10 +124,11 @@ pal8<-colorFactor(
 
 ui <- fluidPage(
   theme = shinytheme("united"),
-  br(),
-  img(src = "../www/SLlogo.png", height = 100, width = 300),
+  h1("Shortlist"),
+  h4("A comparison tool for liberal arts colleges"),
   br(),
   tabsetPanel(type="tabs",
+        tabPanel("User Guide"),
         tabPanel("Search", helpText(strong("Input your parameters to find colleges that match your search! NOTE: Data is for 2017")),
                 flowLayout(
                          #numericInput("tuition", "Maximum tuition", 60000, 50000, 70000, 5000),
@@ -166,15 +167,7 @@ ui <- fluidPage(
                                      checkboxInput("graduation", "Graduation Rate", FALSE),
                                      checkboxInput("tuition", "Tuition Cost", FALSE),
                                      checkboxInput("rank", "Rank", FALSE),
-                                     checkboxInput("fulltime", "Student body size", FALSE))),
-        tabPanel("Test",
-                   selectInput("College1", "College 1:",
-                               choices=unique(Compiled_Data$College)),
-                   selectInput("College2", "College 2:",
-                              choices=unique(Compiled_Data$College)),
-                   tableOutput(outputId = "comparison")
-                 )
-
+                                     checkboxInput("fulltime", "Student body size", FALSE)))
                    
 
   
@@ -331,8 +324,6 @@ server <- function(input, output) {
     }
   })
   
- output$comparison <- renderTable({Compiled_Data %>% filter(year==2017) %>%
-                                    filter(College==input$College1 | College==input$College2)})
 
  output$searchlist <- renderTable({Final_Data_2017 %>% 
                                     select(-X1, -lat, -lon, -year, X1_1, -type) %>% 
