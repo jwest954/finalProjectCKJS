@@ -130,8 +130,10 @@ ui <- fluidPage(
   br(),
   tabsetPanel(type="tabs",
         tabPanel("User Guide", 
-                 p("First paragraph"),
-                 p("Second paragraph")),
+                 p("Shortlist is a search engine for prospective higher education students who are looking for a liberal arts experience. In the “Search” tab, users may input college characteristics, and the engine live updates to display all colleges in the dataset that match the user’s criteria. These search characteristics are tuition, region, rank, athletic division, calendar system, campus type, and user’s SAT/ACT score (user must select which percentile they would like to fall under). College search output includes region, state, number of full time students, number of part time students, percent of international students, percent of students of color (SOC), percent of female students, retention rate, graduation rate, tuition, school rank, and college endowment. The user can view these summarizing values and evaluate the schools."),
+                 p("In the “Comparison” tab, users may directly compare two colleges from the Search tab. The engine uses data from 2008-2017. It displays summary graphs of endowment and school rank over time. The user can use gganimate tools to zoom in on graphs to view fine detail changes over time."),
+                 p("In the “Map” tab, the user can select one or multiple college variables, and a map will visualize characteristics of the colleges in the data set, based on 2017 data. These characteristics are percent of international students, percent of SOC, percent of female students, retention rate, graduation rate, tuition, and rank."),
+                 p("It is important to note that the data set used in this app is limited to 40 liberal arts colleges in the US. It is primarily useful for students who wish to refine their college search once they have decided to attend a small liberal arts school. This app provides a framework that could be used with a larger data set of schools to expand the scope of the search. Additionally, the data used in this app is from two different sources. One includes data from 2008 to 2017, and the other from 2018.")),
         tabPanel("Search", helpText(strong("Input your parameters to find colleges that match your search! NOTE: Data is for 2017")),
                 flowLayout(
                          numericInput("tuition1", "Maximum tuition", 70000, 50000, 70000, 5000),
