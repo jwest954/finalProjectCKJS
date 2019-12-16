@@ -10,12 +10,12 @@ library(maps)
 library(maptools)
 library(readxl)
 library(shinythemes)
-library(DT)
 
 Endowments <- read_csv("Endowments.csv")
 
 Final_Data_2017 <- read_csv("Final_Data_2017.csv")
 Final_Data_2017 <- Final_Data_2017 %>% filter(Region !="NA")
+                                  
 
 
 #tidy the data by pivoting it
@@ -125,10 +125,11 @@ pal8<-colorFactor(
 
 ui <- fluidPage(
   theme = shinytheme("united"),
-  h1("Shortlist"),
-  h4("A comparison tool for liberal arts colleges"),
+  br(),
+  img(src = "../www/SLlogo.png", height = 100, width = 300),
   br(),
   tabsetPanel(type="tabs",
+
         tabPanel("User Guide",
                  p(strong("Shortlist User Guide")),
                  p("Shortlist is a search engine for prospective higher education students who are looking for a liberal arts experience."),
@@ -140,24 +141,24 @@ ui <- fluidPage(
                  p("In the “Map” tab, the user can select one or multiple college variables, and a map will visualize characteristics of the colleges in the data set, based on 2017 data. These characteristics are percent of international students, percent of SOC, percent of female students, retention rate, graduation rate, tuition, and rank."),
                  p(strong("Considerations")),
                  p("It is important to note that the data set used in this app is limited to 40 liberal arts colleges in the US. It is primarily useful for students who wish to refine their college search once they have decided to attend a small liberal arts school. This app provides a framework that could be used with a larger data set of schools to expand the scope of the search. Additionally, the data used in this app is from two different sources. One includes data from 2008 to 2017, and the other from 2018.")),
+
         tabPanel("Search", helpText(strong("Input your parameters to find colleges that match your search! NOTE: Data is for 2017")),
                 flowLayout(
-                         numericInput("tuition1", "Maximum tuition", 70000, 50000, 70000, 5000),
-                         selectInput("Region", "Region",
-                                     choices= c(Final_Data_2017$Region, "Any"), selected = "Any"),
-                         selectInput("calendarsystem", "Calendar system",
-                                      choices=c(Final_Data_2017$calendar_system, "Any"), selected = "Any"),
-                         numericInput("acceptancerate", "Minimum acceptance rate", .7, .05, .7, .05),
-                         selectInput("campus", "Campus type",
-                                      choices = c(Final_Data_2017$campus, "Any"), selected = "Any"),
-                         selectInput("division", "Athletic division",
-                                      choices = c(Final_Data_2017$division, "Any"), selected = "Any"),
-                         textInput("rank", "Minimum school rank"),
-                          textInput("testScore", "ACT or SAT score"),
-                          radioButtons("percentile", "Percentile", 
-                                     choices = c("Top 25%", "Middle 50%", "Bottom 25%"))
-                         ),
-                        dataTableOutput(outputId = "searchlist")),
+                         textInput("tuition", "What should max tuition be?" ),
+                         selectInput("Region", "What region should the school be in?",
+                                    choices=unique(Final_Data_2017$Region)),
+                         selectInput("calendarsystem", "What calendar system should the school use?",
+                                     choices=Final_Data_2017$calendar_system),
+                         textInput("acceptancerate", "What should the minimum acceptance rate be?"),
+                         selectInput("campus", "Where should the campus be located?",
+                                     choices = Final_Data_2017$campus),
+                         selectInput("division", "What althletic division should the school be in?",
+                                     choices = Final_Data_2017$division),
+                         textInput("rank", "How should the school be ranked?")),
+                         textInput("testScore", "ACT or SAT score"),
+                         radioButtons("percentile", "Where would you like to fall?", 
+                                    choices = c("Top 25%", "Middle 50%", "Bottom 25%")),
+                        tableOutput(outputId = "searchlist")),
         tabPanel("Comparison",
                 flowLayout(
                          selectInput("College1", "College 1:", 
@@ -170,7 +171,7 @@ ui <- fluidPage(
                                    tabPanel("Ranking", plotlyOutput(outputId = "plot2")))),
         tabPanel("Map", leafletOutput(outputId="mymap"),
                  helpText("The map shows the location of the colleges classified by color in the categories shown in the panel with data from 2017"),
-                       absolutePanel(top = 250, left = 20, 
+                  absolutePanel(top = 250, left = 20, 
                                      checkboxInput("IS", "International Students", FALSE),
                                      checkboxInput("soc", "Students of Color", FALSE),
                                      checkboxInput("female", "Female Ratio", FALSE),
@@ -178,7 +179,17 @@ ui <- fluidPage(
                                      checkboxInput("graduation", "Graduation Rate", FALSE),
                                      checkboxInput("tuition", "Tuition Cost", FALSE),
                                      checkboxInput("rank", "Rank", FALSE),
-                                     checkboxInput("fulltime", "Student body size", FALSE)))
+                                     checkboxInput("fulltime", "Student body size", FALSE))),
+                    
+  
+        tabPanel("Test",
+                   selectInput("College1", "College 1:", 
+                               choices=unique(Compiled_Data$College)),
+                   selectInput("College2", "College 2:", 
+                              choices=unique(Compiled_Data$College)),
+                   tableOutput(outputId = "comparison")
+                 )
+                 
                    
 
   
@@ -203,7 +214,6 @@ server <- function(input, output) {
                                                  ggplot(aes(x=year, y=ranking, color=College))+
                                                  geom_line()+
                                                  scale_x_continuous(limits = input$year_range)+
-                                                 scale_y_reverse()+
                                                  coord_cartesian(ylim = c(0, 50), xlim = c(2010,2017))))})
 
   output$mymap <-renderLeaflet({
@@ -335,7 +345,6 @@ server <- function(input, output) {
     }
   })
   
-
   output$searchlist <- DT::renderDataTable(DT::datatable({
     data <- Final_Data_2017 %>% 
     select(-X1, -lat, -lon, -year, -X1_1, -type) %>%
@@ -387,8 +396,6 @@ server <- function(input, output) {
   }))
   
 }
-
-
                               
 
 
