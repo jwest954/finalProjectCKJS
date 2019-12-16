@@ -138,7 +138,7 @@ ui <- fluidPage(
                                      choices= c(Final_Data_2017$Region, "Any"), selected = "Any"),
                          selectInput("calendarsystem", "Calendar system",
                                       choices=c(Final_Data_2017$calendar_system, "Any"), selected = "Any"),
-                         # textInput("acceptancerate", "Minimum acceptance rate"),
+                         numericInput("acceptancerate", "Minimum acceptance rate", .5, .05, .7, .05),
                          selectInput("campus", "Campus type",
                                       choices = c(Final_Data_2017$campus, "Any"), selected = "Any"),
                          selectInput("division", "Athletic division",
@@ -328,14 +328,14 @@ server <- function(input, output) {
   
 
  output$searchlist <- renderTable({Final_Data_2017 %>% 
-                                    select(-X1, -lat, -lon, -year, X1_1, -type) %>% 
+                                    select(-X1, -lat, -lon, -year, -X1_1, -type) %>% 
                                     filter(tuition<input$tuition1) %>% 
                                     filter(Region==input$Region)%>% 
                                     # filter(rank<=input$rank) %>% 
                                     filter(division==input$division) %>% 
                                     filter(calendar_system==input$calendarsystem) %>% 
-                                    filter(campus==input$campus) #%>%
-                                    # filter(acceptance_rate >= input$acceptancerate)
+                                    filter(campus==input$campus) %>%
+                                    filter(acceptance_rate >= input$acceptancerate)
                                     }
                                     # if (nrow(output$searchlist) = NULL) {
                                     # "No colleges match your search"}
