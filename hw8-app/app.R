@@ -128,7 +128,9 @@ ui <- fluidPage(
   h4("A comparison tool for liberal arts colleges"),
   br(),
   tabsetPanel(type="tabs",
-        tabPanel("User Guide"),
+        tabPanel("User Guide", 
+                 p("First paragraph"),
+                 p("Second paragraph")),
         tabPanel("Search", helpText(strong("Input your parameters to find colleges that match your search! NOTE: Data is for 2017")),
                 flowLayout(
                          #numericInput("tuition", "Maximum tuition", 60000, 50000, 70000, 5000),
