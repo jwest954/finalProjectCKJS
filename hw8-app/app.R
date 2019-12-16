@@ -158,7 +158,7 @@ ui <- fluidPage(
                                    tabPanel("Ranking", plotlyOutput(outputId = "plot2")))),
         tabPanel("Map", leafletOutput(outputId="mymap"),
                  helpText("The map shows the location of the colleges classified by color in the categories shown in the panel with data from 2017"),
-                       absolutePanel(top = 250, left = 20, 
+                  absolutePanel(top = 250, left = 20, 
                                      checkboxInput("IS", "International Students", FALSE),
                                      checkboxInput("soc", "Students of Color", FALSE),
                                      checkboxInput("female", "Female Ratio", FALSE),
@@ -166,7 +166,9 @@ ui <- fluidPage(
                                      checkboxInput("graduation", "Graduation Rate", FALSE),
                                      checkboxInput("tuition", "Tuition Cost", FALSE),
                                      checkboxInput("rank", "Rank", FALSE),
-                                     checkboxInput("fulltime", "Student body size", FALSE))),
+                                     checkboxInput("fulltime", "Student body size", FALSE)))
+                    ),
+  
         tabPanel("Test",
                    selectInput("College1", "College 1:", 
                                choices=unique(Compiled_Data$College)),
