@@ -36,6 +36,15 @@ Final_Data_2017 <- College_Data %>%
 ```
 
 ```{r}
+Final_Data_2017$international <- round(Final_Data_2017$international, digits = 1)
+Final_Data_2017$SOC <- round(Final_Data_2017$SOC, digits = 1)
+Final_Data_2017$female <- round(Final_Data_2017$female, digits = 1)
+
+Final_Data_2017
+```
+
+
+```{r}
 write.csv(Compiled_Data_2017, file="Compiled_Data_2017.csv")
 write.csv(Final_Data_2017, file="Final_Data_2017.csv")
 ```
