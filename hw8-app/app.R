@@ -143,11 +143,11 @@ ui <- fluidPage(
                          selectInput("campus", "Campus type",
                                       choices = c(Final_Data_2017$campus, "Any"), selected = "Any"),
                          selectInput("division", "Athletic division",
-                                      choices = c(Final_Data_2017$division, "Any"), selected = "Any")#,
-                         #textInput("rank", "Minimum school rank")#,
-                         # textInput("testScore", "ACT or SAT score"),
-                         # radioButtons("percentile", "Percentile", 
-                         #            choices = c("Top 25%", "Middle 50%", "Bottom 25%"))
+                                      choices = c(Final_Data_2017$division, "Any"), selected = "Any"),
+                         textInput("rank", "Minimum school rank"),
+                          textInput("testScore", "ACT or SAT score"),
+                          radioButtons("percentile", "Percentile", 
+                                     choices = c("Top 25%", "Middle 50%", "Bottom 25%"))
                          ),
                         dataTableOutput(outputId = "searchlist")),
         tabPanel("Comparison",
@@ -345,7 +345,28 @@ server <- function(input, output) {
     if(input$campus != "Any"){
       data <- data[data$campus == input$campus,]
     }
-    data
+    # if(input$testScore >= data$act_composite_75){
+    #   data <- data[data$act_composite_75 == input$testScore,]
+    # }
+    data2 <- data %>% 
+      rename(`calendar system`=calendar_system,
+             `acceptance rate`=acceptance_rate,
+             `SAT composite 25th percentile`=sat_composite_25,
+             `SAT composite 75th percentile`=sat_composite_75,
+             `ACT composite 25th percentile`=act_composite_25,
+             `ACT composite 75th percentile`=act_composite_75,
+             `net price`=net_price,
+             region=Region,
+             `full time students`=fulltime,
+             `part time students`=parttime,
+             `percent international students`=international,
+             `percent students of color`=SOC,
+             `percent female`= female,
+             `retention rate`= retention,
+             `graduation rate`=graduation,
+             `endowment (in millions)`=endowment
+             )
+    data2
   }))
   
 }
