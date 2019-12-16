@@ -166,8 +166,8 @@ ui <- fluidPage(
                                      checkboxInput("graduation", "Graduation Rate", FALSE),
                                      checkboxInput("tuition", "Tuition Cost", FALSE),
                                      checkboxInput("rank", "Rank", FALSE),
-                                     checkboxInput("fulltime", "Student body size", FALSE)))
-                    ),
+                                     checkboxInput("fulltime", "Student body size", FALSE))),
+                    
   
         tabPanel("Test",
                    selectInput("College1", "College 1:", 
