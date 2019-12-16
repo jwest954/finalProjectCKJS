@@ -10,6 +10,7 @@ library(maps)
 library(maptools)
 library(readxl)
 library(shinythemes)
+library(DT)
 
 Endowments <- read_csv("Endowments.csv")
 
@@ -133,12 +134,12 @@ ui <- fluidPage(
                  p("Second paragraph")),
         tabPanel("Search", helpText(strong("Input your parameters to find colleges that match your search! NOTE: Data is for 2017")),
                 flowLayout(
-                         numericInput("tuition1", "Maximum tuition", 60000, 50000, 70000, 5000),
+                         numericInput("tuition1", "Maximum tuition", 70000, 50000, 70000, 5000),
                          selectInput("Region", "Region",
                                      choices= c(Final_Data_2017$Region, "Any"), selected = "Any"),
                          selectInput("calendarsystem", "Calendar system",
                                       choices=c(Final_Data_2017$calendar_system, "Any"), selected = "Any"),
-                         numericInput("acceptancerate", "Minimum acceptance rate", .5, .05, .7, .05),
+                         numericInput("acceptancerate", "Minimum acceptance rate", .7, .05, .7, .05),
                          selectInput("campus", "Campus type",
                                       choices = c(Final_Data_2017$campus, "Any"), selected = "Any"),
                          selectInput("division", "Athletic division",
@@ -148,7 +149,7 @@ ui <- fluidPage(
                          # radioButtons("percentile", "Percentile", 
                          #            choices = c("Top 25%", "Middle 50%", "Bottom 25%"))
                          ),
-                        tableOutput(outputId = "searchlist")),
+                        dataTableOutput(outputId = "searchlist")),
         tabPanel("Comparison",
                 flowLayout(
                          selectInput("College1", "College 1:", 
@@ -327,20 +328,29 @@ server <- function(input, output) {
   })
   
 
- output$searchlist <- renderTable({Final_Data_2017 %>% 
-                                    select(-X1, -lat, -lon, -year, -X1_1, -type) %>% 
-                                    filter(tuition<input$tuition1) %>% 
-                                    filter(Region==input$Region)%>% 
-                                    # filter(rank<=input$rank) %>% 
-                                    filter(division==input$division) %>% 
-                                    filter(calendar_system==input$calendarsystem) %>% 
-                                    filter(campus==input$campus) %>%
-                                    filter(acceptance_rate >= input$acceptancerate)
-                                    }
-                                    # if (nrow(output$searchlist) = NULL) {
-                                    # "No colleges match your search"}
-                                    )
+  output$searchlist <- DT::renderDataTable(DT::datatable({
+    data <- Final_Data_2017 %>% 
+    select(-X1, -lat, -lon, -year, -X1_1, -type) %>%
+    filter(tuition<input$tuition1) %>% 
+    filter(acceptance_rate <= input$acceptancerate)
+    if(input$Region != "Any"){
+      data <- data[data$Region == input$Region,]
+    }
+    if(input$division != "Any"){
+      data <- data[data$division == input$division,]
+    }
+    if(input$calendarsystem != "Any"){
+      data <- data[data$calendar_system == input$calendarsystem,]
+    }
+    if(input$campus != "Any"){
+      data <- data[data$campus == input$campus,]
+    }
+    data
+  }))
+  
 }
+
+
                               
 
 
