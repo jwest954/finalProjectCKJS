@@ -152,14 +152,13 @@ ui <- fluidPage(
                         dataTableOutput(outputId = "searchlist")),
         tabPanel("Comparison",
                 flowLayout(
-                         selectInput("College1", "College 1:", 
-                                   choices=unique(tidy_Endowments$College)),
-                         selectInput("College2", "College 2:", 
-                                   choices=unique(tidy_Endowments$College))),
-                         helpText("These plots show the changes in the selected colleges' rankings for the selected range."),
-                         tabsetPanel(type = "tabs",
-                                   tabPanel("Endowments", plotlyOutput(outputId = "plot1")),
-                                   tabPanel("Ranking", plotlyOutput(outputId = "plot2")))),
+                         selectInput("xaxisvariable", "x-axis variable", 
+                                   names(Final_Data_2017)),
+                         selectInput("yaxisvariable", "y-axis variable", 
+                                     names(Final_Data_2017))),
+                helpText("Use this tab to look for trends between two variables among schools in the database."),
+                plotlyOutput(outputId="comparisongraph")         
+                ),
         tabPanel("Map", leafletOutput(outputId="mymap"),
                  helpText("The map shows the location of the colleges classified by color in the categories shown in the panel with data from 2017"),
                        absolutePanel(top = 250, left = 20, 
@@ -183,20 +182,9 @@ ui <- fluidPage(
   
   
 server <- function(input, output) {
-  output$plot1 <- renderPlotly({print(ggplotly(tidy_Endowments %>% 
-                                         filter(College ==input$College1 | College ==input$College2) %>% 
-                                         ggplot(aes(x=year, y=endowment, color=College))+
-                                         geom_line()+
-                                         scale_x_continuous(limits = input$year_range)+
-                                         coord_cartesian(ylim = c(0, 3000))))})
-
-  output$plot2 <- renderPlotly({print(ggplotly(tidy_USNews_Rankings %>% 
-                                                 filter(College ==input$College1 | College ==input$College2) %>% 
-                                                 ggplot(aes(x=year, y=ranking, color=College))+
-                                                 geom_line()+
-                                                 scale_x_continuous(limits = input$year_range)+
-                                                 scale_y_reverse()+
-                                                 coord_cartesian(ylim = c(0, 50), xlim = c(2010,2017))))})
+  output$comparisongraph <- renderPlotly({print(ggplotly(Final_Data_2017 %>% 
+                                         ggplot(aes(x=input$xaxisvariable, y=input$yaxisvariable, color=college))+
+                                         geom_point()))})
 
   output$mymap <-renderLeaflet({
     leaflet(data) %>% 
