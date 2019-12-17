@@ -159,15 +159,6 @@ ui <- fluidPage(
                    textInput("satScore", "SAT score")
                  ),
                  dataTableOutput(outputId = "searchlist")),
-        tabPanel("Comparison",
-                flowLayout(
-                         selectInput("xaxisvariable", "x-axis variable", 
-                                   names(Final_Data_2017)),
-                         selectInput("yaxisvariable", "y-axis variable", 
-                                     names(Final_Data_2017))),
-                helpText("Use this tab to look for trends between two variables among schools in the database."),
-                plotlyOutput(outputId="comparisongraph")         
-                ),
         tabPanel("Map", leafletOutput(outputId="mymap"),
                  helpText("The map shows the location of the colleges classified by color in the categories shown in the panel with data from 2017"),
                   absolutePanel(top = 250, left = 20, 
