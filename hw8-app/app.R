@@ -60,12 +60,12 @@ full_map_data<- map_data_longer %>%
 
 #Cathegorizing data for map 
 CompData<-Compiled_Data %>% 
-  mutate(international_type=ifelse(international <=10, "low", 
-                                   ifelse(international >10 & international <= 20, "intermediate",
-                                          ifelse(international > 20, "high", "other"))), 
-         SOC_type=ifelse(SOC <=10, "low", 
-                         ifelse(SOC >10 & SOC <= 25, "intermediate",
-                                ifelse(SOC > 25, "high", "other"))),
+  mutate(international_type=ifelse(international <=7, "low", 
+                                   ifelse(international >7 & international <= 13, "intermediate",
+                                          ifelse(international > 13, "high", "other"))), 
+         SOC_type=ifelse(SOC <=22, "low", 
+                         ifelse(SOC >22 & SOC <= 33, "intermediate",
+                                ifelse(SOC > 33, "high", "other"))),
          female_type=ifelse(female<=47,"low",
                             ifelse(female >47 & female <=53, "intermediate",
                                    ifelse(female >53, "high", "other"))),
