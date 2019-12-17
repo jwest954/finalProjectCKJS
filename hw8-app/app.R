@@ -140,8 +140,8 @@ ui <- fluidPage(
                  p("This tab allows users to select one or multiple college variables, and a map will visualize characteristics of the colleges in the data set, based on 2017 data. These characteristics are percent of international students, percent of SOC, percent of female students, retention rate, graduation rate, tuition, and rank."),
                  p(strong("Considerations")),
                  p("It is important to note that the data set used in this app is limited to 40 liberal arts colleges in the US. It is primarily useful for students who wish to refine their college search once they have decided to attend a small liberal arts school. This app provides a framework that could be used with a larger data set of schools to expand the scope of the search. Additionally, the data used in this app are from two different sources; some of the variables are from 2017, and others are from 2018."),
-                 p("Variables from the 2017 data set are college rank, region, state, number of full time students, number of part time students, percent of international students, percent of students of color, percent of female students, retention rate, graduation rate, tuition, school rank, and college endowment."),
-                 p("Variables from the 2018 data set are tuition, acceptance rate, athletic division, calendar system, campus type, and SAT/ACT percentiles.")),
+                 p("Variables from the 2017 data (Macalester's Interactive Peer Data Base) set are college rank, region, state, number of full time students, number of part time students, percent of international students, percent of students of color, percent of female students, retention rate, graduation rate, tuition, school rank, and college endowment."),
+                 p("Variables from the 2018 data set (National Center for Education Statistics Website) are tuition, acceptance rate, athletic division, calendar system, campus type, and SAT/ACT percentiles.")),
 
         tabPanel("Search", helpText(strong("Input your parameters to find colleges that match your search! NOTE: Data is for 2017")),
                  flowLayout(
