@@ -125,8 +125,8 @@ pal8<-colorFactor(
 
 ui <- fluidPage(
   theme = shinytheme("united"),
-  br(),
-  img(src = "../www/SLlogo.png", height = 100, width = 300),
+  h1("Shortlist"),
+  h4("A comparison tool for liberal arts colleges"),
   br(),
   tabsetPanel(type="tabs",
 
@@ -178,17 +178,9 @@ ui <- fluidPage(
                                      checkboxInput("graduation", "Graduation Rate", FALSE),
                                      checkboxInput("tuition", "Tuition Cost", FALSE),
                                      checkboxInput("rank", "Rank", FALSE),
-                                     checkboxInput("fulltime", "Student body size", FALSE))),
+                                     checkboxInput("fulltime", "Student body size", FALSE)))
                     
   
-        tabPanel("Test",
-                   selectInput("College1", "College 1:", 
-                               choices=unique(Compiled_Data$College)),
-                   selectInput("College2", "College 2:", 
-                              choices=unique(Compiled_Data$College)),
-                   tableOutput(outputId = "comparison")
-                 )
-                 
                    
 
   
